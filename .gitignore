@@ -1,0 +1,14 @@
+# Large experiment outputs
+runs/
+data/
+logs/
+reports/
+__pycache__/
+*.pyc
+*.pth
+*.ply
+*.pt
+*.npz
+*.tar.gz
+*.egg-info/
+.DS_Store

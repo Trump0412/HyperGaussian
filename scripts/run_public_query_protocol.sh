@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/common.sh"
+
+PROTOCOL_JSON="${1:-}"
+RUN_DIR="${2:-}"
+DATASET_DIR="${3:-}"
+
+if [[ -z "${PROTOCOL_JSON}" || -z "${RUN_DIR}" || -z "${DATASET_DIR}" ]]; then
+  echo "Usage: $0 <protocol_json> <run_dir> <dataset_dir>" >&2
+  exit 2
+fi
+
+if [[ ! -f "${PROTOCOL_JSON}" ]]; then
+  echo "Missing protocol json: ${PROTOCOL_JSON}" >&2
+  exit 2
+fi
+if [[ ! -d "${RUN_DIR}" ]]; then
+  echo "Missing run dir: ${RUN_DIR}" >&2
+  exit 2
+fi
+if [[ ! -d "${DATASET_DIR}" ]]; then
+  echo "Missing dataset dir: ${DATASET_DIR}" >&2
+  exit 2
+fi
+
+unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY all_proxy ALL_PROXY ftp_proxy FTP_PROXY
+export HF_ENDPOINT="${HF_ENDPOINT:-https://hf-mirror.com}"
+
+python - <<'PY' "${PROTOCOL_JSON}" | while IFS=$'\t' read -r query_slug query_text; do
+import json
+import sys
+from pathlib import Path
+
+protocol_path = Path(sys.argv[1])
+payload = json.loads(protocol_path.read_text())
+for item in payload.get("queries", []):
+    slug = str(item["query_slug"]).strip()
+    query = str(item["query"]).strip()
+    print(f"{slug}\t{query}")
+PY
+  if [[ -z "${query_slug}" || -z "${query_text}" ]]; then
+    continue
+  fi
+  echo "[query] ${query_slug}: ${query_text}"
+  bash "${GS_ROOT}/scripts/run_query_specific_worldtube_pipeline.sh" \
+    "${RUN_DIR}" \
+    "${DATASET_DIR}" \
+    "${query_text}" \
+    "${query_slug}"
+done

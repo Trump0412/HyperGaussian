@@ -1,0 +1,2 @@
+"""GaussianStellar top-level package."""
+
