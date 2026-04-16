@@ -3,6 +3,8 @@ set -euo pipefail
 
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/common.sh"
 
+require_conda_bin
+
 GSAM2_ROOT="${GS_ROOT}/external/Grounded-SAM-2"
 PYTHON_VERSION="${1:-3.10}"
 TORCH_VERSION="${GSAM2_TORCH_VERSION:-2.5.1}"
@@ -27,19 +29,19 @@ export SAM2_BUILD_ALLOW_ERRORS=1
 mkdir -p "$(dirname "${GSAM2_ENV_PATH}")"
 
 if [[ ! -d "${GSAM2_ENV_PATH}" ]]; then
-  conda create -y -p "${GSAM2_ENV_PATH}" "python=${PYTHON_VERSION}" pip
+  "${GS_CONDA_BIN}" create -y -p "${GSAM2_ENV_PATH}" "python=${PYTHON_VERSION}" pip
 fi
 
 env OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
-  conda run --no-capture-output -p "${GSAM2_ENV_PATH}" python -m pip install --upgrade pip setuptools wheel
+  "${GS_CONDA_BIN}" run --no-capture-output -p "${GSAM2_ENV_PATH}" python -m pip install --upgrade pip setuptools wheel
 
 env OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
-  conda run --no-capture-output -p "${GSAM2_ENV_PATH}" python -m pip install \
+  "${GS_CONDA_BIN}" run --no-capture-output -p "${GSAM2_ENV_PATH}" python -m pip install \
     "torch==${TORCH_VERSION}" "torchvision==${TORCHVISION_VERSION}" "torchaudio==${TORCHAUDIO_VERSION}" \
     --index-url https://download.pytorch.org/whl/cu121
 
 env OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
-  conda run --no-capture-output -p "${GSAM2_ENV_PATH}" python -m pip install -i "${PIP_MIRROR}" \
+  "${GS_CONDA_BIN}" run --no-capture-output -p "${GSAM2_ENV_PATH}" python -m pip install -i "${PIP_MIRROR}" \
     "numpy<2" "transformers>=4.46" "huggingface_hub>=0.27" "pillow>=10" "tqdm>=4.66" \
     "hydra-core>=1.3.2" "iopath>=0.1.10" "opencv-python>=4.8" "supervision>=0.25" \
     "pyyaml>=6.0" "matplotlib>=3.8" "accelerate>=0.34" "sentencepiece>=0.2"
@@ -47,12 +49,12 @@ env OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
 if [[ "${INSTALL_EDITABLE}" == "1" ]]; then
   pushd "${GSAM2_ROOT}" >/dev/null
   env OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 CUDA_HOME="${CUDA_HOME}" SAM2_BUILD_ALLOW_ERRORS=1 \
-    conda run --no-capture-output -p "${GSAM2_ENV_PATH}" python -m pip install --no-build-isolation -e .
+    "${GS_CONDA_BIN}" run --no-capture-output -p "${GSAM2_ENV_PATH}" python -m pip install --no-build-isolation -e .
   popd >/dev/null
 fi
 
 env OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 HF_ENDPOINT="${HF_MIRROR}" \
-  conda run --no-capture-output -p "${GSAM2_ENV_PATH}" python - <<PY
+  "${GS_CONDA_BIN}" run --no-capture-output -p "${GSAM2_ENV_PATH}" python - <<PY
 import sys
 from transformers import AutoModelForZeroShotObjectDetection, AutoProcessor
 sys.path.insert(0, "${GSAM2_ROOT}")

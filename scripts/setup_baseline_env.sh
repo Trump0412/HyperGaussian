@@ -7,19 +7,38 @@ ENV_ROOT="${GS4D_ENV_ROOT:-/root/autodl-tmp/.conda-envs}"
 CONDA_PKGS_DIRS="${GS4D_CONDA_PKGS_DIRS:-/root/autodl-tmp/.conda-pkgs}"
 PIP_CACHE_DIR="${GS4D_PIP_CACHE_DIR:-/root/autodl-tmp/.cache/pip}"
 
-mkdir -p "${ENV_ROOT}" "${CONDA_PKGS_DIRS}" "${PIP_CACHE_DIR}"
+resolve_conda_bin() {
+  if [[ -n "${GS4D_CONDA_BIN:-}" && -x "${GS4D_CONDA_BIN}" ]]; then
+    printf '%s' "${GS4D_CONDA_BIN}"
+    return
+  fi
+  if command -v conda >/dev/null 2>&1; then
+    command -v conda
+    return
+  fi
+  local candidate
+  for candidate in /root/miniconda3/bin/conda /opt/conda/bin/conda /usr/local/miniconda3/bin/conda; do
+    if [[ -x "${candidate}" ]]; then
+      printf '%s' "${candidate}"
+      return
+    fi
+  done
+}
 
-if ! command -v conda >/dev/null 2>&1; then
-  echo "conda is required but was not found in PATH." >&2
+CONDA_BIN="$(resolve_conda_bin || true)"
+if [[ -z "${CONDA_BIN}" ]]; then
+  echo "conda is required but was not found. Set GS4D_CONDA_BIN or add conda to PATH." >&2
   exit 1
 fi
+
+mkdir -p "${ENV_ROOT}" "${CONDA_PKGS_DIRS}" "${PIP_CACHE_DIR}"
 
 create_env_if_missing() {
   local env_prefix="$1"
   local python_version="$2"
   if [[ ! -d "${env_prefix}" ]]; then
     env CONDA_PKGS_DIRS="${CONDA_PKGS_DIRS}" PIP_CACHE_DIR="${PIP_CACHE_DIR}" \
-      conda create -y -p "${env_prefix}" "python=${python_version}"
+      "${CONDA_BIN}" create -y -p "${env_prefix}" "python=${python_version}"
   fi
 }
 
@@ -27,21 +46,21 @@ pip_run() {
   local env_prefix="$1"
   shift
   env CONDA_PKGS_DIRS="${CONDA_PKGS_DIRS}" PIP_CACHE_DIR="${PIP_CACHE_DIR}" \
-    conda run --no-capture-output -p "${env_prefix}" python -m pip "$@"
+    "${CONDA_BIN}" run --no-capture-output -p "${env_prefix}" python -m pip "$@"
 }
 
 conda_install() {
   local env_prefix="$1"
   shift
   env CONDA_PKGS_DIRS="${CONDA_PKGS_DIRS}" PIP_CACHE_DIR="${PIP_CACHE_DIR}" \
-    conda install -y -p "${env_prefix}" "$@"
+    "${CONDA_BIN}" install -y -p "${env_prefix}" "$@"
 }
 
 install_local_package() {
   local env_prefix="$1"
   local package_dir="$2"
   env CONDA_PKGS_DIRS="${CONDA_PKGS_DIRS}" PIP_CACHE_DIR="${PIP_CACHE_DIR}" CUDA_HOME="${CUDA_HOME}" PATH="${PATH}" LD_LIBRARY_PATH="${LD_LIBRARY_PATH:-}" OMP_NUM_THREADS="${OMP_NUM_THREADS:-1}" MAX_JOBS="${MAX_JOBS:-4}" TORCH_CUDA_ARCH_LIST="${TORCH_CUDA_ARCH_LIST:-}" \
-    conda run --no-capture-output -p "${env_prefix}" env -C "${package_dir}" python setup.py install
+    "${CONDA_BIN}" run --no-capture-output -p "${env_prefix}" env -C "${package_dir}" python setup.py install
 }
 
 ensure_cuda_headers() {

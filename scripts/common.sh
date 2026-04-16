@@ -10,6 +10,33 @@ GS_TORCH_HOME="${GS4D_TORCH_HOME:-${GS_CACHE_ROOT}/torch}"
 GS_MPLCONFIGDIR="${GS4D_MPLCONFIGDIR:-${GS_CACHE_ROOT}/matplotlib}"
 GSAM2_ENV_PATH="${GS4D_GSAM2_ENV_PATH:-${GS_ENV_ROOT}/grounded-sam2-py310}"
 
+resolve_conda_bin() {
+  if [[ -n "${GS4D_CONDA_BIN:-}" && -x "${GS4D_CONDA_BIN}" ]]; then
+    printf '%s' "${GS4D_CONDA_BIN}"
+    return
+  fi
+  if command -v conda >/dev/null 2>&1; then
+    command -v conda
+    return
+  fi
+  local candidate
+  for candidate in /root/miniconda3/bin/conda /opt/conda/bin/conda /usr/local/miniconda3/bin/conda; do
+    if [[ -x "${candidate}" ]]; then
+      printf '%s' "${candidate}"
+      return
+    fi
+  done
+}
+
+GS_CONDA_BIN="$(resolve_conda_bin || true)"
+
+require_conda_bin() {
+  if [[ -z "${GS_CONDA_BIN}" ]]; then
+    echo "conda was not found. Set GS4D_CONDA_BIN or add conda to PATH." >&2
+    return 127
+  fi
+}
+
 detect_default_env_path() {
   if [[ -n "${GS4D_ENV_PATH:-}" ]]; then
     printf '%s' "${GS4D_ENV_PATH}"
@@ -42,6 +69,7 @@ export GS_ENV_ROOT
 export GS_CACHE_ROOT
 export GS_ENV_PATH
 export GS_ENV_NAME
+export GS_CONDA_BIN
 export GS_CONDA_PKGS_DIRS
 export GS_PIP_CACHE_DIR
 export GS_TORCH_HOME
@@ -59,8 +87,9 @@ gs_python() {
   if [[ "${CONDA_PREFIX:-}" == "${GS_ENV_PATH}" ]]; then
     python "$@"
   else
+    require_conda_bin
     env OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 XDG_CACHE_HOME="${GS_CACHE_ROOT}" TORCH_HOME="${GS_TORCH_HOME}" MPLCONFIGDIR="${GS_MPLCONFIGDIR}" CONDA_PKGS_DIRS="${GS_CONDA_PKGS_DIRS}" PIP_CACHE_DIR="${GS_PIP_CACHE_DIR}" \
-      conda run --no-capture-output -p "${GS_ENV_PATH}" python "$@"
+      "${GS_CONDA_BIN}" run --no-capture-output -p "${GS_ENV_PATH}" python "$@"
   fi
 }
 
@@ -68,8 +97,9 @@ gs_pip() {
   if [[ "${CONDA_PREFIX:-}" == "${GS_ENV_PATH}" ]]; then
     python -m pip "$@"
   else
+    require_conda_bin
     env OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 XDG_CACHE_HOME="${GS_CACHE_ROOT}" TORCH_HOME="${GS_TORCH_HOME}" MPLCONFIGDIR="${GS_MPLCONFIGDIR}" CONDA_PKGS_DIRS="${GS_CONDA_PKGS_DIRS}" PIP_CACHE_DIR="${GS_PIP_CACHE_DIR}" \
-      conda run --no-capture-output -p "${GS_ENV_PATH}" python -m pip "$@"
+      "${GS_CONDA_BIN}" run --no-capture-output -p "${GS_ENV_PATH}" python -m pip "$@"
   fi
 }
 
@@ -77,8 +107,9 @@ gsam2_python() {
   if [[ "${CONDA_PREFIX:-}" == "${GSAM2_ENV_PATH}" ]]; then
     python "$@"
   else
+    require_conda_bin
     env OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 XDG_CACHE_HOME="${GS_CACHE_ROOT}" TORCH_HOME="${GS_TORCH_HOME}" MPLCONFIGDIR="${GS_MPLCONFIGDIR}" CONDA_PKGS_DIRS="${GS_CONDA_PKGS_DIRS}" PIP_CACHE_DIR="${GS_PIP_CACHE_DIR}" \
-      conda run --no-capture-output -p "${GSAM2_ENV_PATH}" python "$@"
+      "${GS_CONDA_BIN}" run --no-capture-output -p "${GSAM2_ENV_PATH}" python "$@"
   fi
 }
 
@@ -86,8 +117,9 @@ gsam2_pip() {
   if [[ "${CONDA_PREFIX:-}" == "${GSAM2_ENV_PATH}" ]]; then
     python -m pip "$@"
   else
+    require_conda_bin
     env OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 XDG_CACHE_HOME="${GS_CACHE_ROOT}" TORCH_HOME="${GS_TORCH_HOME}" MPLCONFIGDIR="${GS_MPLCONFIGDIR}" CONDA_PKGS_DIRS="${GS_CONDA_PKGS_DIRS}" PIP_CACHE_DIR="${GS_PIP_CACHE_DIR}" \
-      conda run --no-capture-output -p "${GSAM2_ENV_PATH}" python -m pip "$@"
+      "${GS_CONDA_BIN}" run --no-capture-output -p "${GSAM2_ENV_PATH}" python -m pip "$@"
   fi
 }
 
@@ -95,7 +127,8 @@ gs_python_cmd() {
   if [[ "${CONDA_PREFIX:-}" == "${GS_ENV_PATH}" ]]; then
     printf 'python'
   else
-    printf 'env OMP_NUM_THREADS=%q MKL_NUM_THREADS=%q XDG_CACHE_HOME=%q TORCH_HOME=%q MPLCONFIGDIR=%q CONDA_PKGS_DIRS=%q PIP_CACHE_DIR=%q conda run --no-capture-output -p %q python' "1" "1" "${GS_CACHE_ROOT}" "${GS_TORCH_HOME}" "${GS_MPLCONFIGDIR}" "${GS_CONDA_PKGS_DIRS}" "${GS_PIP_CACHE_DIR}" "${GS_ENV_PATH}"
+    require_conda_bin >/dev/null
+    printf 'env OMP_NUM_THREADS=%q MKL_NUM_THREADS=%q XDG_CACHE_HOME=%q TORCH_HOME=%q MPLCONFIGDIR=%q CONDA_PKGS_DIRS=%q PIP_CACHE_DIR=%q %q run --no-capture-output -p %q python' "1" "1" "${GS_CACHE_ROOT}" "${GS_TORCH_HOME}" "${GS_MPLCONFIGDIR}" "${GS_CONDA_PKGS_DIRS}" "${GS_PIP_CACHE_DIR}" "${GS_CONDA_BIN}" "${GS_ENV_PATH}"
   fi
 }
 
@@ -213,12 +246,12 @@ run_with_gpu_monitor() {
   local peak_mb
   peak_mb="$(cat "${peak_file}")"
   rm -f "${peak_file}"
-  cat > "${meta_path}" <<EOF
+  cat > "${meta_path}" <<META
 {
   "status": ${status},
   "elapsed_seconds": $((end_ts - start_ts)),
   "gpu_peak_mb": ${peak_mb}
 }
-EOF
+META
   return "${status}"
 }

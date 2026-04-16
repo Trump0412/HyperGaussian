@@ -28,18 +28,7 @@ fi
 unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY all_proxy ALL_PROXY ftp_proxy FTP_PROXY
 export HF_ENDPOINT="${HF_ENDPOINT:-https://hf-mirror.com}"
 
-python - <<'PY' "${PROTOCOL_JSON}" | while IFS=$'\t' read -r query_slug query_text; do
-import json
-import sys
-from pathlib import Path
-
-protocol_path = Path(sys.argv[1])
-payload = json.loads(protocol_path.read_text())
-for item in payload.get("queries", []):
-    slug = str(item["query_slug"]).strip()
-    query = str(item["query"]).strip()
-    print(f"{slug}\t{query}")
-PY
+while IFS=$'\t' read -r query_slug query_text; do
   if [[ -z "${query_slug}" || -z "${query_text}" ]]; then
     continue
   fi
@@ -49,4 +38,6 @@ PY
     "${DATASET_DIR}" \
     "${query_text}" \
     "${query_slug}"
-done
+done < <(
+  gs_python "${GS_ROOT}/scripts/list_public_protocol_queries.py" "${PROTOCOL_JSON}"
+)
