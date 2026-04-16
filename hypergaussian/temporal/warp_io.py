@@ -6,7 +6,7 @@ from typing import Optional
 
 import torch
 
-from .modules import DensityIntegralWarp, IdentityWarp, MonotonicMLPWarp, StellarMetricWarp
+from .modules import DensityIntegralWarp, IdentityWarp, MonotonicMLPWarp, ContextualMetricWarp
 from .warp_viz import save_warp_artifacts
 
 
@@ -24,7 +24,7 @@ def build_temporal_warp(args, device: str = "cuda"):
     elif warp_type == "density":
         model = DensityIntegralWarp(hidden_dim=hidden_dim, num_layers=num_layers, num_bins=num_bins)
     elif warp_type in {"stellar", "stellar_metric", "local"}:
-        model = StellarMetricWarp(hidden_dim=hidden_dim, num_layers=num_layers)
+        model = ContextualMetricWarp(hidden_dim=hidden_dim, num_layers=num_layers)
     else:
         raise ValueError(f"Unsupported temporal warp type: {warp_type}")
     return model.to(device)

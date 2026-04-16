@@ -4,77 +4,305 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>HyperGaussian: Referring 4D Gaussian Splatting</title>
-  <meta name="description" content="Official project page for HyperGaussian: Referring 4D Gaussian Splatting" />
-  <link rel="stylesheet" href="assets/githubio.css" />
+  <meta name="description" content="HyperGaussian: a unified framework for dynamic 4D Gaussian reconstruction and training-free referring understanding." />
+  <style>
+    :root {
+      --bg: #f9f9f7;
+      --text: #1a1a1a;
+      --muted: #555;
+      --accent: #2563eb;
+      --border: #e0e0e0;
+      --card: #ffffff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 16px;
+      line-height: 1.65;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Header ── */
+    header {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 64px 24px 40px;
+      text-align: center;
+    }
+    header .venue {
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+    header h1 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 20px;
+    }
+    .authors {
+      font-size: 1rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .affil {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+    .btn-row {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 0;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 18px;
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text);
+      background: var(--card);
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .btn:hover { border-color: var(--accent); background: #eff6ff; text-decoration: none; }
+    .btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+    /* ── Teaser ── */
+    .teaser {
+      max-width: 860px;
+      margin: 36px auto 0;
+      padding: 0 24px;
+      text-align: center;
+    }
+    .teaser img {
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .teaser figcaption {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-top: 10px;
+    }
+
+    /* ── Main content ── */
+    main {
+      max-width: 860px;
+      margin: 48px auto 64px;
+      padding: 0 24px;
+    }
+    section { margin-bottom: 48px; }
+    section h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 6px;
+      margin-bottom: 18px;
+    }
+    section p { color: var(--muted); margin-bottom: 12px; }
+    section p:last-child { margin-bottom: 0; }
+
+    /* ── Method overview ── */
+    .method-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .step {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+    .step .step-num {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+    .step h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 6px; }
+    .step p { font-size: 0.88rem; color: var(--muted); margin: 0; }
+
+    /* ── Results table ── */
+    .results-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      margin-top: 14px;
+    }
+    .results-table th {
+      text-align: left;
+      font-weight: 700;
+      border-bottom: 2px solid var(--border);
+      padding: 8px 12px;
+      background: #f3f4f6;
+    }
+    .results-table td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--muted);
+    }
+    .results-table tr:last-child td { border-bottom: none; }
+    .results-table td:first-child { color: var(--text); font-weight: 500; }
+
+    /* ── BibTeX ── */
+    pre {
+      background: #f3f4f6;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 16px;
+      font-size: 0.85rem;
+      overflow-x: auto;
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 20px 24px;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    @media (max-width: 600px) {
+      header { padding-top: 40px; }
+      .method-steps { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
-  <header class="hero">
-    <div class="hero__inner">
-      <p class="eyebrow">CVPR/ICCV/NeurIPS Style Open Project Page</p>
-      <h1>HyperGaussian: <span>Referring 4D Gaussian Splatting</span></h1>
-      <p class="lead">A unified framework for dynamic 4D Gaussian reconstruction and training-free referring understanding.</p>
-      <div class="links">
-        <a href="https://github.com/<ORG>/<REPO>" target="_blank" rel="noopener">Code</a>
-        <a href="https://<HG-LINK>" target="_blank" rel="noopener">Project</a>
-        <a href="https://arxiv.org/abs/<ARXIV-ID>" target="_blank" rel="noopener">Paper</a>
+
+<header>
+  <p class="venue">Preprint 2026</p>
+  <h1>HyperGaussian:<br>Referring 4D Gaussian Splatting</h1>
+  <p class="authors">Anonymous Authors</p>
+  <p class="affil">Anonymous Institution</p>
+  <div class="btn-row">
+    <a class="btn" href="https://github.com/Trump0412/HyperGaussian" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+      Code
+    </a>
+    <a class="btn" href="https://arxiv.org/abs/2026.00000" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      Paper
+    </a>
+    <a class="btn" href="https://huggingface.co/datasets/Trump0412/HyperGaussian-R4D-Bench-QA" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      Dataset
+    </a>
+  </div>
+</header>
+
+<figure class="teaser">
+  <img src="assets/teaser.png" alt="HyperGaussian overview: dynamic 4D Gaussian reconstruction with training-free referring inference" />
+  <figcaption>HyperGaussian reconstructs dynamic scenes as 4D Gaussians and performs training-free referring inference over complex spatiotemporal queries.</figcaption>
+</figure>
+
+<main>
+
+  <section id="abstract">
+    <h2>Abstract</h2>
+    <p>
+      Dynamic 4D Gaussian representations have shown strong capability in reconstruction and rendering, yet they remain insufficient for complex natural-language referring understanding in dynamic scenes. Existing 4D Gaussian methods are primarily designed for rendering-oriented dynamic modeling, while current semantic extensions often rely on scene-specific optimization or are evaluated on relatively simple query settings.
+    </p>
+    <p>
+      We study <strong>Referring 4D Gaussian Splatting (R4DGS)</strong>, a task that targets realistic 4D referring understanding under temporally varying queries, multi-target and reasoning-intensive queries, and zero-target or distractor queries. To support this task, we introduce <strong>R4D-Bench-QA</strong>, a benchmark with structured query annotations. We further present <strong>HyperGaussian</strong>, a unified framework that couples generalized dynamic Gaussian reconstruction, entity-centric scene structuring, and training-free referring inference. HyperGaussian augments the dynamic Gaussian representation with explicit temporal support, organizes reconstructed Gaussians into a shared entity bank, uses Multimodal Large Language Models (MLLMs) to decompose complex queries into trackable object phrases and referring constraints, and performs query-conditioned grounding without retraining the underlying scene representation.
+    </p>
+  </section>
+
+  <section id="method">
+    <h2>Method Overview</h2>
+    <p>HyperGaussian operates in four stages:</p>
+    <div class="method-steps">
+      <div class="step">
+        <div class="step-num">Stage 1</div>
+        <h3>Dynamic Reconstruction</h3>
+        <p>Reconstruct the scene as 4D Gaussians with explicit temporal extent and a learned contextual time warp.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">Stage 2</div>
+        <h3>Entity Bank Construction</h3>
+        <p>Segment and track Gaussians into a shared entity bank using Grounded-SAM2 and temporal consistency.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">Stage 3</div>
+        <h3>Query Decomposition</h3>
+        <p>Use an MLLM to parse complex natural-language queries into trackable object phrases and spatiotemporal constraints.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">Stage 4</div>
+        <h3>Training-Free Grounding</h3>
+        <p>Score entity candidates against decomposed query constraints without any scene-specific retraining.</p>
       </div>
     </div>
-    <div class="hero__mesh" aria-hidden="true"></div>
-  </header>
+  </section>
 
-  <main>
-    <section class="panel">
-      <h2>Abstract</h2>
-      <p>
-        We study Referring 4D Gaussian Splatting (R4DGS) for realistic query understanding in dynamic scenes, including temporally varying, multi-target, and distractor queries. HyperGaussian couples generalized dynamic Gaussian reconstruction, entity-centric scene structuring, and training-free referring inference. It augments dynamic Gaussians with explicit temporal support, builds a shared entitybank, decomposes complex natural-language queries into trackable phrases and constraints, and performs query-conditioned grounding without retraining scene-specific representations.
-      </p>
-    </section>
+  <section id="results">
+    <h2>Experimental Results</h2>
+    <p>Reconstruction quality on HyperNeRF scenes (compared to 4DGS baseline):</p>
+    <table class="results-table">
+      <thead>
+        <tr><th>Scene</th><th>PSNR ↑</th><th>SSIM ↑</th><th>LPIPS ↓</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>keyboard</td><td>28.41</td><td>0.887</td><td>0.207</td></tr>
+      </tbody>
+    </table>
 
-    <section class="panel metrics">
-      <h2>Selected Results</h2>
-      <div class="grid">
-        <article>
-          <h3>Keyboard Reconstruction</h3>
-          <ul>
-            <li>PSNR: <strong>28.4051</strong></li>
-            <li>SSIM: <strong>0.8867</strong></li>
-            <li>LPIPS-vgg: <strong>0.2072</strong></li>
-          </ul>
-        </article>
-        <article>
-          <h3>R4D-Bench-QA (Snapshot)</h3>
-          <ul>
-            <li>Acc: <strong>97.4990%</strong></li>
-            <li>vIoU: <strong>8.1029%</strong></li>
-            <li>tIoU: <strong>97.4908%</strong></li>
-          </ul>
-        </article>
-        <article>
-          <h3>4DLangSplat (Americano)</h3>
-          <ul>
-            <li>Acc: <strong>97.72%</strong></li>
-            <li>vIoU: <strong>69.35%</strong></li>
-            <li>temporal tIoU: <strong>94.34%</strong></li>
-          </ul>
-        </article>
-      </div>
-    </section>
+    <p style="margin-top:24px;">Referring evaluation on public benchmarks:</p>
+    <table class="results-table">
+      <thead>
+        <tr><th>Benchmark</th><th>Acc ↑</th><th>vIoU ↑</th><th>tIoU ↑</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>4DLangSplat (americano)</td><td>97.72%</td><td>69.35%</td><td>94.34%</td></tr>
+        <tr><td>R4D-Bench-QA (snapshot)</td><td>97.50%</td><td>8.10%</td><td>97.49%</td></tr>
+      </tbody>
+    </table>
+  </section>
 
-    <section class="panel">
-      <h2>Resources</h2>
-      <p>Reproducibility report: <a href="reproducibility_20260416.md">docs/reproducibility_20260416.md</a></p>
-      <p>Open-source readiness notes: <a href="open_source_readiness_20260416.md">docs/open_source_readiness_20260416.md</a></p>
-      <p>R4D-Bench-QA (planned): <a href="https://huggingface.co/datasets/<ORG>/HyperGaussian-R4D-Bench-QA" target="_blank" rel="noopener">Hugging Face Dataset</a></p>
-    </section>
+  <section id="citation">
+    <h2>Citation</h2>
+    <pre>@article{hypergaussian2026,
+  title   = {HyperGaussian: Referring 4D Gaussian Splatting},
+  author  = {Anonymous},
+  journal = {arXiv},
+  year    = {2026}
+}</pre>
+  </section>
 
-    <section class="panel">
-      <h2>Contact</h2>
-      <p><a href="mailto:2286793492@qq.com">2286793492@qq.com</a></p>
-    </section>
-  </main>
+  <section id="acknowledgements">
+    <h2>Acknowledgements</h2>
+    <p>
+      This project builds on <a href="https://github.com/hustvl/4DGaussians" target="_blank" rel="noopener">4DGaussians</a>,
+      <a href="https://github.com/IDEA-Research/Grounded-SAM-2" target="_blank" rel="noopener">Grounded-SAM2</a>,
+      and related dynamic scene understanding toolchains.
+      The project page template is adapted from
+      <a href="https://li-hao-yuan.github.io/GeoThinker/" target="_blank" rel="noopener">GeoThinker</a>.
+    </p>
+  </section>
 
-  <footer>
-    <p>HyperGaussian • 2026</p>
-  </footer>
+</main>
+
+<footer>
+  <p>HyperGaussian &bull; 2026 &bull; <a href="https://github.com/Trump0412/HyperGaussian">GitHub</a></p>
+</footer>
+
 </body>
 </html>

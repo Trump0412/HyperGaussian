@@ -1,5 +1,5 @@
 from .base import BaseTemporalWarp
-from .modules import DensityIntegralWarp, IdentityWarp, MonotonicMLPWarp, StellarMetricWarp
+from .modules import DensityIntegralWarp, IdentityWarp, MonotonicMLPWarp, ContextualMetricWarp
 from .warp_io import (
     attach_temporal_warp,
     build_temporal_warp,
@@ -15,7 +15,7 @@ __all__ = [
     "DensityIntegralWarp",
     "IdentityWarp",
     "MonotonicMLPWarp",
-    "StellarMetricWarp",
+    "ContextualMetricWarp",
     "attach_temporal_warp",
     "build_temporal_warp",
     "build_temporal_warp_optimizer",

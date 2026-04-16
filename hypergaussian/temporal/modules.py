@@ -109,7 +109,7 @@ class DensityIntegralWarp(BaseTemporalWarp):
         return self.density(t)
 
 
-class StellarMetricWarp(BaseTemporalWarp):
+class ContextualMetricWarp(BaseTemporalWarp):
     def __init__(self, hidden_dim: int = 32, num_layers: int = 2, max_context_samples: int = 256):
         super().__init__(enabled=True)
         num_layers = max(num_layers, 1)
