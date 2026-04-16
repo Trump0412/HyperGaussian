@@ -41,18 +41,6 @@ Environments are installed under `/root/autodl-tmp/.conda-envs/` by default. Ove
 
 ## Dataset Setup
 
-### D-NeRF
-
-```bash
-# Download a single scene (default: bouncingballs)
-bash scripts/prepare_dnerf.sh --scene mutant
-
-# Download all 8 scenes
-bash scripts/prepare_dnerf.sh --all
-```
-
-Expected layout: `data/dnerf/<scene>/`
-
 ### HyperNeRF
 
 ```bash
@@ -76,12 +64,25 @@ bash scripts/download_4dlangsplat_annotations.sh rpzhou/HyperNeRF-Annotation \
   data/benchmarks/4dlangsplat/HyperNeRF-Annotation
 ```
 
+### R4D-Bench-QA (our benchmark)
+
+> **Coming soon on Hugging Face.** The benchmark will be released at:
+> `https://huggingface.co/datasets/Trump0412/HyperGaussian-R4D-Bench-QA`
+
+Once available, download with:
+
+```bash
+# Download R4D-Bench-QA benchmark annotations
+bash scripts/download_r4d_bench_qa.sh \
+  Trump0412/HyperGaussian-R4D-Bench-QA \
+  data/benchmarks/r4d_bench_qa
+```
+
+Expected layout: `data/benchmarks/r4d_bench_qa/`
+
 ## Training
 
 ```bash
-# Train on a D-NeRF scene
-bash scripts/train.sh dnerf mutant
-
 # Train on a HyperNeRF scene
 bash scripts/train.sh hypernerf misc/keyboard
 ```
@@ -100,7 +101,6 @@ Key environment variables (all have sensible defaults):
 
 ```bash
 # Render and compute metrics for a trained scene
-bash scripts/eval.sh dnerf mutant
 bash scripts/eval.sh hypernerf misc/keyboard
 ```
 
@@ -129,7 +129,7 @@ python scripts/evaluate_public_query_protocol.py \
 
 ```bash
 python scripts/evaluate_ours_benchmark.py \
-  --benchmark data/benchmarks/Ours_benchmark.json \
+  --benchmark data/benchmarks/r4d_bench_qa/benchmark.json \
   --query-root-map configs/query_root_map.json \
   --dataset-dir-map configs/dataset_dir_map.json \
   --output-json reports/r4d_bench_eval.json \

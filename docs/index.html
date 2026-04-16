@@ -1,308 +1,367 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html>
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>HyperGaussian: Referring 4D Gaussian Splatting</title>
-  <meta name="description" content="HyperGaussian: a unified framework for dynamic 4D Gaussian reconstruction and training-free referring understanding." />
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
   <style>
-    :root {
-      --bg: #f9f9f7;
-      --text: #1a1a1a;
-      --muted: #555;
-      --accent: #2563eb;
-      --border: #e0e0e0;
-      --card: #ffffff;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: "Helvetica Neue", Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      font-size: 16px;
-      line-height: 1.65;
-    }
-    a { color: var(--accent); text-decoration: none; }
-    a:hover { text-decoration: underline; }
+    body { font-family: 'Noto Sans', sans-serif; }
 
-    /* ── Header ── */
-    header {
-      max-width: 860px;
-      margin: 0 auto;
-      padding: 64px 24px 40px;
-      text-align: center;
-    }
-    header .venue {
-      font-size: 13px;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 14px;
-    }
-    header h1 {
-      font-size: clamp(1.8rem, 4vw, 2.8rem);
+    .navbar { background-color: #1a1a2e; }
+    .navbar-item, .navbar-link { color: #e0e0e0 !important; }
+    .navbar-item:hover { background-color: #16213e !important; color: #fff !important; }
+
+    .hero { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); }
+    .hero .title { color: #ffffff; font-family: 'Google Sans', sans-serif; }
+    .hero .subtitle { color: #c8d6e5; }
+
+    .author-block { display: inline-block; margin: 0 8px; }
+    .author-block a { color: #74b9ff; font-weight: 600; }
+    .author-block a:hover { color: #a29bfe; }
+
+    .publication-links .button { margin: 4px; border-radius: 20px; font-weight: 600; }
+    .publication-links .button.is-dark { background-color: #2d3436; }
+    .publication-links .button.is-dark:hover { background-color: #636e72; }
+
+    .section-title {
+      font-family: 'Google Sans', sans-serif;
+      font-size: 2rem;
       font-weight: 700;
-      line-height: 1.15;
-      margin-bottom: 20px;
-    }
-    .authors {
-      font-size: 1rem;
-      color: var(--muted);
-      margin-bottom: 8px;
-    }
-    .affil {
-      font-size: 0.88rem;
-      color: var(--muted);
-      margin-bottom: 28px;
-    }
-    .btn-row {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 0;
-    }
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 18px;
-      border: 1.5px solid var(--border);
-      border-radius: 6px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: var(--text);
-      background: var(--card);
-      transition: border-color 0.15s, background 0.15s;
-    }
-    .btn:hover { border-color: var(--accent); background: #eff6ff; text-decoration: none; }
-    .btn svg { width: 16px; height: 16px; flex-shrink: 0; }
-
-    /* ── Teaser ── */
-    .teaser {
-      max-width: 860px;
-      margin: 36px auto 0;
-      padding: 0 24px;
       text-align: center;
+      margin-bottom: 1.5rem;
+      color: #2d3436;
     }
-    .teaser img {
-      width: 100%;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-    }
-    .teaser figcaption {
-      font-size: 0.88rem;
-      color: var(--muted);
-      margin-top: 10px;
+    .section-title::after {
+      content: '';
+      display: block;
+      width: 60px;
+      height: 3px;
+      background: #6c5ce7;
+      margin: 0.5rem auto 0;
+      border-radius: 2px;
     }
 
-    /* ── Main content ── */
-    main {
-      max-width: 860px;
-      margin: 48px auto 64px;
-      padding: 0 24px;
+    .abstract-text {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: #4a4a4a;
+      text-align: justify;
     }
-    section { margin-bottom: 48px; }
-    section h2 {
-      font-size: 1.25rem;
-      font-weight: 700;
-      border-bottom: 2px solid var(--border);
-      padding-bottom: 6px;
-      margin-bottom: 18px;
-    }
-    section p { color: var(--muted); margin-bottom: 12px; }
-    section p:last-child { margin-bottom: 0; }
 
-    /* ── Method overview ── */
-    .method-steps {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 14px;
-      margin-top: 18px;
+    .teaser-section { background-color: #f8f9fa; }
+    .teaser-caption {
+      font-size: 0.95rem;
+      color: #636e72;
+      text-align: center;
+      margin-top: 1rem;
+      font-style: italic;
     }
-    .step {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 16px;
+
+    .method-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      height: 100%;
+      border-top: 4px solid #6c5ce7;
+      transition: transform 0.2s, box-shadow 0.2s;
     }
-    .step .step-num {
+    .method-card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0,0,0,0.12); }
+    .method-card .step-num {
       font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
+      font-weight: 800;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 6px;
+      color: #6c5ce7;
+      margin-bottom: 0.5rem;
     }
-    .step h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 6px; }
-    .step p { font-size: 0.88rem; color: var(--muted); margin: 0; }
+    .method-card h3 { font-size: 1.05rem; font-weight: 700; color: #2d3436; margin-bottom: 0.5rem; }
+    .method-card p { font-size: 0.9rem; color: #636e72; line-height: 1.6; }
 
-    /* ── Results table ── */
-    .results-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.9rem;
-      margin-top: 14px;
-    }
-    .results-table th {
-      text-align: left;
-      font-weight: 700;
-      border-bottom: 2px solid var(--border);
-      padding: 8px 12px;
-      background: #f3f4f6;
-    }
-    .results-table td {
-      padding: 8px 12px;
-      border-bottom: 1px solid var(--border);
-      color: var(--muted);
-    }
-    .results-table tr:last-child td { border-bottom: none; }
-    .results-table td:first-child { color: var(--text); font-weight: 500; }
+    .results-table th { background-color: #f0f0f0; font-weight: 700; }
+    .results-table td, .results-table th { padding: 0.75rem 1rem; border: 1px solid #e0e0e0; }
+    .results-table tr:hover td { background-color: #f8f9fa; }
 
-    /* ── BibTeX ── */
-    pre {
-      background: #f3f4f6;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 16px;
-      font-size: 0.85rem;
+    .bibtex-block {
+      background: #2d3436;
+      color: #dfe6e9;
+      border-radius: 8px;
+      padding: 1.5rem;
+      font-family: 'Castoro', monospace;
+      font-size: 0.88rem;
+      line-height: 1.7;
       overflow-x: auto;
-      color: var(--text);
-      line-height: 1.55;
     }
 
-    /* ── Footer ── */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 20px 24px;
-      text-align: center;
+    footer { background-color: #1a1a2e; color: #b2bec3; padding: 2rem 0; }
+    footer a { color: #74b9ff; }
+    footer a:hover { color: #a29bfe; }
+
+    .tag.is-affil {
+      background-color: #f0f0f0;
+      color: #4a4a4a;
       font-size: 0.85rem;
-      color: var(--muted);
+      margin: 2px;
     }
 
-    @media (max-width: 600px) {
-      header { padding-top: 40px; }
-      .method-steps { grid-template-columns: 1fr; }
+    @media (max-width: 768px) {
+      .hero .title { font-size: 1.8rem; }
+      .section-title { font-size: 1.5rem; }
     }
   </style>
 </head>
 <body>
 
-<header>
-  <p class="venue">Preprint 2026</p>
-  <h1>HyperGaussian:<br>Referring 4D Gaussian Splatting</h1>
-  <p class="authors">Anonymous Authors</p>
-  <p class="affil">Anonymous Institution</p>
-  <div class="btn-row">
-    <a class="btn" href="https://github.com/Trump0412/HyperGaussian" target="_blank" rel="noopener">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
-      Code
+<!-- Navbar -->
+<nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a class="navbar-item" href="https://trump0412.github.io/HyperGaussian/">
+      <strong style="color:#74b9ff;">HyperGaussian</strong>
     </a>
-    <a class="btn" href="https://arxiv.org/abs/2026.00000" target="_blank" rel="noopener">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-      Paper
-    </a>
-    <a class="btn" href="https://huggingface.co/datasets/Trump0412/HyperGaussian-R4D-Bench-QA" target="_blank" rel="noopener">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-      Dataset
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navMenu">
+      <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
     </a>
   </div>
-</header>
+  <div id="navMenu" class="navbar-menu">
+    <div class="navbar-start" style="flex-grow:1; justify-content:center;">
+      <a class="navbar-item" href="#abstract">Abstract</a>
+      <a class="navbar-item" href="#method">Method</a>
+      <a class="navbar-item" href="#results">Results</a>
+      <a class="navbar-item" href="#citation">Citation</a>
+    </div>
+  </div>
+</nav>
 
-<figure class="teaser">
-  <img src="assets/teaser.png" alt="HyperGaussian overview: dynamic 4D Gaussian reconstruction with training-free referring inference" />
-  <figcaption>HyperGaussian reconstructs dynamic scenes as 4D Gaussians and performs training-free referring inference over complex spatiotemporal queries.</figcaption>
-</figure>
-
-<main>
-
-  <section id="abstract">
-    <h2>Abstract</h2>
-    <p>
-      Dynamic 4D Gaussian representations have shown strong capability in reconstruction and rendering, yet they remain insufficient for complex natural-language referring understanding in dynamic scenes. Existing 4D Gaussian methods are primarily designed for rendering-oriented dynamic modeling, while current semantic extensions often rely on scene-specific optimization or are evaluated on relatively simple query settings.
-    </p>
-    <p>
-      We study <strong>Referring 4D Gaussian Splatting (R4DGS)</strong>, a task that targets realistic 4D referring understanding under temporally varying queries, multi-target and reasoning-intensive queries, and zero-target or distractor queries. To support this task, we introduce <strong>R4D-Bench-QA</strong>, a benchmark with structured query annotations. We further present <strong>HyperGaussian</strong>, a unified framework that couples generalized dynamic Gaussian reconstruction, entity-centric scene structuring, and training-free referring inference. HyperGaussian augments the dynamic Gaussian representation with explicit temporal support, organizes reconstructed Gaussians into a shared entity bank, uses Multimodal Large Language Models (MLLMs) to decompose complex queries into trackable object phrases and referring constraints, and performs query-conditioned grounding without retraining the underlying scene representation.
-    </p>
-  </section>
-
-  <section id="method">
-    <h2>Method Overview</h2>
-    <p>HyperGaussian operates in four stages:</p>
-    <div class="method-steps">
-      <div class="step">
-        <div class="step-num">Stage 1</div>
-        <h3>Dynamic Reconstruction</h3>
-        <p>Reconstruct the scene as 4D Gaussians with explicit temporal extent and a learned contextual time warp.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">Stage 2</div>
-        <h3>Entity Bank Construction</h3>
-        <p>Segment and track Gaussians into a shared entity bank using Grounded-SAM2 and temporal consistency.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">Stage 3</div>
-        <h3>Query Decomposition</h3>
-        <p>Use an MLLM to parse complex natural-language queries into trackable object phrases and spatiotemporal constraints.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">Stage 4</div>
-        <h3>Training-Free Grounding</h3>
-        <p>Score entity candidates against decomposed query constraints without any scene-specific retraining.</p>
+<!-- Hero -->
+<section class="hero" style="padding-top:3.25rem;">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <p class="is-size-6 has-text-weight-semibold" style="color:#a29bfe; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:0.75rem;">Preprint 2026</p>
+          <h1 class="title is-2 publication-title">
+            HyperGaussian: Referring 4D Gaussian Splatting
+          </h1>
+          <div class="is-size-5 publication-authors" style="margin-bottom:1rem;">
+            <span class="author-block"><a href="#">Anonymous Authors</a></span>
+          </div>
+          <div class="is-size-6" style="color:#c8d6e5; margin-bottom:1.5rem;">
+            <span>Anonymous Institution</span>
+          </div>
+          <div class="publication-links">
+            <a href="https://arxiv.org/abs/2026.00000" target="_blank" class="button is-dark is-rounded">
+              <span class="icon"><i class="fas fa-file-pdf"></i></span>
+              <span>Paper</span>
+            </a>
+            <a href="https://github.com/Trump0412/HyperGaussian" target="_blank" class="button is-dark is-rounded">
+              <span class="icon"><i class="fab fa-github"></i></span>
+              <span>Code</span>
+            </a>
+            <a href="https://huggingface.co/datasets/Trump0412/HyperGaussian-R4D-Bench-QA" target="_blank" class="button is-dark is-rounded">
+              <span class="icon">🤗</span>
+              <span>Dataset</span>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <section id="results">
-    <h2>Experimental Results</h2>
-    <p>Reconstruction quality on HyperNeRF scenes (compared to 4DGS baseline):</p>
-    <table class="results-table">
-      <thead>
-        <tr><th>Scene</th><th>PSNR ↑</th><th>SSIM ↑</th><th>LPIPS ↓</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>keyboard</td><td>28.41</td><td>0.887</td><td>0.207</td></tr>
-      </tbody>
-    </table>
+<!-- Teaser -->
+<section class="section teaser-section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <figure>
+          <img src="assets/teaser.png" alt="HyperGaussian teaser: dynamic 4D Gaussian reconstruction with training-free referring inference" style="border-radius:8px; box-shadow:0 4px 20px rgba(0,0,0,0.12);" />
+          <figcaption class="teaser-caption">
+            HyperGaussian reconstructs dynamic scenes as 4D Gaussians and performs training-free referring inference over complex spatiotemporal queries — including temporally varying, multi-target, reasoning-intensive, and zero-target conditions.
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <p style="margin-top:24px;">Referring evaluation on public benchmarks:</p>
-    <table class="results-table">
-      <thead>
-        <tr><th>Benchmark</th><th>Acc ↑</th><th>vIoU ↑</th><th>tIoU ↑</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>4DLangSplat (americano)</td><td>97.72%</td><td>69.35%</td><td>94.34%</td></tr>
-        <tr><td>R4D-Bench-QA (snapshot)</td><td>97.50%</td><td>8.10%</td><td>97.49%</td></tr>
-      </tbody>
-    </table>
-  </section>
+<!-- Abstract -->
+<section class="section" id="abstract">
+  <div class="container is-max-desktop">
+    <h2 class="section-title">Abstract</h2>
+    <div class="columns is-centered">
+      <div class="column is-four-fifths">
+        <p class="abstract-text">
+          Dynamic 4D Gaussian representations have shown strong capability in reconstruction and rendering, yet they remain insufficient for complex natural-language referring understanding in dynamic scenes. Existing 4D Gaussian methods are primarily designed for rendering-oriented dynamic modeling, while current semantic extensions often rely on scene-specific optimization or are evaluated on relatively simple query settings.
+        </p>
+        <br>
+        <p class="abstract-text">
+          We study <strong>Referring 4D Gaussian Splatting (R4DGS)</strong>, a task that targets realistic 4D referring understanding under temporally varying queries, multi-target and reasoning-intensive queries, and zero-target or distractor queries. To support this task, we introduce <strong>R4D-Bench-QA</strong>, a benchmark with structured query annotations. We further present <strong>HyperGaussian</strong>, a unified framework that couples generalized dynamic Gaussian reconstruction, entity-centric scene structuring, and training-free referring inference. HyperGaussian augments the dynamic Gaussian representation with explicit temporal support, organizes reconstructed Gaussians into a shared entity bank, uses Multimodal Large Language Models (MLLMs) to decompose complex queries into trackable object phrases and referring constraints, and performs query-conditioned grounding without retraining the underlying scene representation.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
 
-  <section id="citation">
-    <h2>Citation</h2>
-    <pre>@article{hypergaussian2026,
+<!-- Method -->
+<section class="section" id="method" style="background-color:#f8f9fa;">
+  <div class="container is-max-desktop">
+    <h2 class="section-title">Method Overview</h2>
+    <div class="columns is-multiline is-centered">
+      <div class="column is-half-tablet is-one-quarter-desktop">
+        <div class="method-card">
+          <div class="step-num">Stage 1</div>
+          <h3>Dynamic Reconstruction</h3>
+          <p>Reconstruct the scene as 4D Gaussians with explicit temporal extent and a learned contextual time warp.</p>
+        </div>
+      </div>
+      <div class="column is-half-tablet is-one-quarter-desktop">
+        <div class="method-card">
+          <div class="step-num">Stage 2</div>
+          <h3>Entity Bank Construction</h3>
+          <p>Segment and track Gaussians into a shared entity bank using Grounded-SAM2 and temporal consistency.</p>
+        </div>
+      </div>
+      <div class="column is-half-tablet is-one-quarter-desktop">
+        <div class="method-card">
+          <div class="step-num">Stage 3</div>
+          <h3>Query Decomposition</h3>
+          <p>Use an MLLM to parse complex natural-language queries into trackable object phrases and spatiotemporal constraints.</p>
+        </div>
+      </div>
+      <div class="column is-half-tablet is-one-quarter-desktop">
+        <div class="method-card">
+          <div class="step-num">Stage 4</div>
+          <h3>Training-Free Grounding</h3>
+          <p>Score entity candidates against decomposed query constraints without any scene-specific retraining.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Results -->
+<section class="section" id="results">
+  <div class="container is-max-desktop">
+    <h2 class="section-title">Experimental Results</h2>
+    <div class="columns is-centered">
+      <div class="column is-four-fifths">
+        <p class="has-text-centered" style="color:#636e72; margin-bottom:1rem;">Reconstruction quality on HyperNeRF scenes</p>
+        <div class="table-container">
+          <table class="table is-fullwidth is-striped results-table">
+            <thead>
+              <tr>
+                <th>Scene</th>
+                <th>PSNR ↑</th>
+                <th>SSIM ↑</th>
+                <th>LPIPS ↓</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>keyboard</td>
+                <td>28.41</td>
+                <td>0.887</td>
+                <td>0.207</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="has-text-centered" style="color:#636e72; margin-top:2rem; margin-bottom:1rem;">Referring evaluation on public benchmarks</p>
+        <div class="table-container">
+          <table class="table is-fullwidth is-striped results-table">
+            <thead>
+              <tr>
+                <th>Benchmark</th>
+                <th>Acc ↑</th>
+                <th>vIoU ↑</th>
+                <th>tIoU ↑</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>4DLangSplat (americano)</td>
+                <td>97.72%</td>
+                <td>69.35%</td>
+                <td>94.34%</td>
+              </tr>
+              <tr>
+                <td>R4D-Bench-QA (snapshot)</td>
+                <td>97.50%</td>
+                <td>8.10%</td>
+                <td>97.49%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Citation -->
+<section class="section" id="citation" style="background-color:#f8f9fa;">
+  <div class="container is-max-desktop">
+    <h2 class="section-title">Citation</h2>
+    <div class="columns is-centered">
+      <div class="column is-four-fifths">
+        <pre class="bibtex-block">@article{hypergaussian2026,
   title   = {HyperGaussian: Referring 4D Gaussian Splatting},
   author  = {Anonymous},
   journal = {arXiv},
   year    = {2026}
 }</pre>
-  </section>
+      </div>
+    </div>
+  </div>
+</section>
 
-  <section id="acknowledgements">
-    <h2>Acknowledgements</h2>
+<!-- Acknowledgements -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="section-title">Acknowledgements</h2>
+    <div class="columns is-centered">
+      <div class="column is-four-fifths has-text-centered">
+        <p style="color:#636e72; font-size:0.95rem; line-height:1.8;">
+          This project builds on
+          <a href="https://github.com/hustvl/4DGaussians" target="_blank">4DGaussians</a>,
+          <a href="https://github.com/IDEA-Research/Grounded-SAM-2" target="_blank">Grounded-SAM2</a>,
+          and related dynamic scene understanding toolchains.
+          The project page template is adapted from
+          <a href="https://li-hao-yuan.github.io/GeoThinker/" target="_blank">GeoThinker</a>
+          and <a href="https://nerfies.github.io/" target="_blank">Nerfies</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="content has-text-centered">
     <p>
-      This project builds on <a href="https://github.com/hustvl/4DGaussians" target="_blank" rel="noopener">4DGaussians</a>,
-      <a href="https://github.com/IDEA-Research/Grounded-SAM-2" target="_blank" rel="noopener">Grounded-SAM2</a>,
-      and related dynamic scene understanding toolchains.
-      The project page template is adapted from
-      <a href="https://li-hao-yuan.github.io/GeoThinker/" target="_blank" rel="noopener">GeoThinker</a>.
+      <strong style="color:#dfe6e9;">HyperGaussian</strong> &bull; 2026 &bull;
+      <a href="https://github.com/Trump0412/HyperGaussian">GitHub</a>
     </p>
-  </section>
-
-</main>
-
-<footer>
-  <p>HyperGaussian &bull; 2026 &bull; <a href="https://github.com/Trump0412/HyperGaussian">GitHub</a></p>
+  </div>
 </footer>
+
+<script>
+  // Navbar burger toggle
+  document.addEventListener('DOMContentLoaded', function() {
+    var burger = document.querySelector('.navbar-burger');
+    var menu = document.getElementById(burger.dataset.target);
+    burger.addEventListener('click', function() {
+      burger.classList.toggle('is-active');
+      menu.classList.toggle('is-active');
+    });
+  });
+</script>
 
 </body>
 </html>
