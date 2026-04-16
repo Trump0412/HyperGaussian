@@ -124,6 +124,20 @@ bash scripts/download_r4d_bench_qa.sh
 
 Downloads to `data/benchmarks/r4d_bench_qa/`.
 
+## Model Weights
+
+The Hyper-Planner uses [Qwen3-VL-8B-Instruct](https://huggingface.co/Qwen/Qwen3-VL-8B-Instruct). Download it before running any referring evaluation:
+
+```bash
+pip install huggingface_hub
+python -c "
+from huggingface_hub import snapshot_download
+snapshot_download('Qwen/Qwen3-VL-8B-Instruct', local_dir='models/Qwen3-VL-8B-Instruct')
+"
+```
+
+The code looks for the model at `models/Qwen3-VL-8B-Instruct/` by default (absolute path: `/root/autodl-tmp/models/Qwen3-VL-8B-Instruct`). Override with `--qwen-model /path/to/model`.
+
 ## Training
 
 ```bash
