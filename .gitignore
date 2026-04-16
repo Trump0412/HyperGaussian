@@ -12,3 +12,11 @@ __pycache__/
 *.tar.gz
 *.egg-info/
 .DS_Store
+
+# Local release notes / legacy drafts
+GaussianStellar_Codex_Taskbook.md
+docs/weaktube_remote_lessons_and_locked_profile_20260404.md
+scripts/run_splitcookie_weaktube_opt_20260401.py
+
+# Vendored dependencies are managed outside this release snapshot
+external/
