@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 from pathlib import Path
 from typing import Any
@@ -10,7 +11,7 @@ from PIL import Image
 
 from .source_images import resolve_dataset_image_entries
 
-DEFAULT_QWEN_MODEL = Path("/root/autodl-tmp/models/Qwen3-VL-8B-Instruct")
+DEFAULT_QWEN_MODEL = Path(os.environ.get("HYPERGAUSSIAN_QWEN_MODEL", "/root/autodl-tmp/models/Qwen3-VL-8B-Instruct"))
 
 
 QUERY_PLAN_TEMPLATE = """You are planning query-conditioned 4D entity discovery for HyperGaussian.

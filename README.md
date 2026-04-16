@@ -90,17 +90,52 @@ bash scripts/setup_grounded_sam2.sh
 
 Environments are installed under `/root/autodl-tmp/.conda-envs/` by default. Override with `GS4D_ENV_ROOT`.
 
+> **Note on COLMAP:** `prepare_hypernerf.sh` requires COLMAP to generate the initial point cloud for each scene. Install it with `apt install colmap` or from [colmap.github.io](https://colmap.github.io/install.html) before running data preparation.
+
+## Model Weights
+
+### Qwen3-VL-8B-Instruct (Hyper-Planner)
+
+The Hyper-Planner uses [Qwen3-VL-8B-Instruct](https://huggingface.co/Qwen/Qwen3-VL-8B-Instruct). Download before running any referring evaluation:
+
+```bash
+python -c "
+from huggingface_hub import snapshot_download
+snapshot_download('Qwen/Qwen3-VL-8B-Instruct', local_dir='models/Qwen3-VL-8B-Instruct')
+"
+```
+
+Default path: `models/Qwen3-VL-8B-Instruct/` (resolved relative to the repo root). Override at runtime with the `HYPERGAUSSIAN_QWEN_MODEL` environment variable:
+
+```bash
+export HYPERGAUSSIAN_QWEN_MODEL=/path/to/Qwen3-VL-8B-Instruct
+```
+
+### SAM2 and Grounding DINO (Grounded-SAM2 pipeline)
+
+Downloaded automatically during `bash scripts/setup_grounded_sam2.sh` via HuggingFace:
+- `facebook/sam2-hiera-large`
+- `IDEA-Research/grounding-dino-base`
+
+If you are behind the GFW, set `HF_ENDPOINT=https://hf-mirror.com` before running the setup script.
+
 ## Dataset Setup
 
 ### HyperNeRF
 
-Download from the [HyperNeRF dataset page](https://github.com/google/hypernerf/releases/tag/v0.1):
+Download all scenes used in the paper from the [HyperNeRF release page](https://github.com/google/hypernerf/releases/tag/v0.1):
 
 ```bash
 bash scripts/prepare_hypernerf.sh
 ```
 
-This downloads all scenes used in the paper into `data/hypernerf/`. To register a locally available scene:
+Downloads and extracts all 6 paper scenes into `data/hypernerf/`. To prepare a single scene:
+
+```bash
+bash scripts/prepare_hypernerf.sh misc keyboard
+```
+
+To register a locally available scene:
 
 ```bash
 bash scripts/prepare_local_hypernerf_scene.sh /path/to/scene <group> <scene>
@@ -124,20 +159,6 @@ bash scripts/download_r4d_bench_qa.sh
 
 Downloads to `data/benchmarks/r4d_bench_qa/`.
 
-## Model Weights
-
-The Hyper-Planner uses [Qwen3-VL-8B-Instruct](https://huggingface.co/Qwen/Qwen3-VL-8B-Instruct). Download it before running any referring evaluation:
-
-```bash
-pip install huggingface_hub
-python -c "
-from huggingface_hub import snapshot_download
-snapshot_download('Qwen/Qwen3-VL-8B-Instruct', local_dir='models/Qwen3-VL-8B-Instruct')
-"
-```
-
-The code looks for the model at `models/Qwen3-VL-8B-Instruct/` by default (absolute path: `/root/autodl-tmp/models/Qwen3-VL-8B-Instruct`). Override with `--qwen-model /path/to/model`.
-
 ## Training
 
 ```bash
@@ -145,27 +166,34 @@ The code looks for the model at `models/Qwen3-VL-8B-Instruct/` by default (absol
 bash scripts/train.sh hypernerf misc/keyboard
 ```
 
-Output is written to `runs/hypergaussian/hypernerf/misc/keyboard/`.
+Output is written to `runs/hypergaussian/hypernerf/keyboard/`.
 
 ## Evaluation
 
 ### Reconstruction metrics
 
 ```bash
-python scripts/eval.py --dataset hypernerf --scene misc/keyboard
+bash scripts/eval.sh hypernerf misc/keyboard
 ```
 
-Writes PSNR / SSIM / LPIPS to `runs/hypergaussian/hypernerf/misc/keyboard/metrics.json`.
+Writes PSNR / SSIM / LPIPS to `runs/hypergaussian/hypernerf/keyboard/metrics.log`.
 
 ### Referring evaluation — 4DLangSplat public protocol
 
+Run the query pipeline, then score:
+
 ```bash
-python scripts/run_query_protocol.py \
-  --protocol data/benchmarks/4dlangsplat/HyperNeRF-Annotation/protocol.json
+bash scripts/run_public_query_protocol.sh \
+  data/benchmarks/4dlangsplat/HyperNeRF-Annotation/protocol.json \
+  runs/hypergaussian \
+  data/hypernerf
 
 python scripts/evaluate_public_query_protocol.py \
-  --protocol data/benchmarks/4dlangsplat/HyperNeRF-Annotation/protocol.json \
-  --output reports/public_eval.json
+  --protocol-json data/benchmarks/4dlangsplat/HyperNeRF-Annotation/protocol.json \
+  --annotation-dir data/benchmarks/4dlangsplat/HyperNeRF-Annotation \
+  --dataset-dir data/hypernerf \
+  --query-root runs/hypergaussian \
+  --output-json reports/public_eval.json
 ```
 
 ### Referring evaluation — R4D-Bench-QA
@@ -173,7 +201,9 @@ python scripts/evaluate_public_query_protocol.py \
 ```bash
 python scripts/evaluate_ours_benchmark.py \
   --benchmark data/benchmarks/r4d_bench_qa/benchmark.json \
-  --output reports/r4d_bench_eval.json
+  --query-root-map configs/query_root_map.json \
+  --dataset-dir-map configs/dataset_dir_map.json \
+  --output-json reports/r4d_bench_eval.json
 ```
 
 ## Repository Layout
