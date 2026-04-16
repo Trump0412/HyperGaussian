@@ -174,14 +174,44 @@ HyperGaussian/
 └── docs/                  # project page
 ```
 
+## Results
+
+### R4D-Bench-QA (joint referring + reconstruction)
+
+| Method | Acc ↑ | vIoU ↑ | PSNR ↑ | SSIM ↑ | LPIPS ↓ |
+|---|---|---|---|---|---|
+| Segment then Splat | 55.6 | 28.4 | 20.3208 | 0.7027 | 0.3971 |
+| 4D LangSplat | 58.4 | 32.1 | 20.3208 | 0.7027 | 0.3971 |
+| **HyperGaussian (Ours)** | **76.5** | **34.4** | **20.4159** | **0.7069** | **0.4082** |
+
+### Generalization on 4D LangSplat HyperNeRF split
+
+| Method | Acc ↑ | vIoU ↑ |
+|---|---|---|
+| LangSplat | 54.27 | 24.13 |
+| Deformable CLIP | 65.01 | 45.37 |
+| Non-Status Field | 84.58 | 62.00 |
+| 4D LangSplat | 88.86 | 66.14 |
+| **HyperGaussian (Ours)** | **91.62** | **66.48** |
+
+### Module Ablation on R4D-Bench-QA
+
+| Variant | Acc ↑ | vIoU ↑ |
+|---|---|---|
+| 4DGS reconstruction (no HyperGS) | 62.9 | 31.5 |
+| w/o Stage 1 static segmentation | 48.6 | 17.2 |
+| w/o Stage 2 semantic assignment | 62.9 | 29.8 |
+| w/o Stage 3 spatio-temporal reasoning | 36.0 | 26.1 |
+| **HyperGaussian (full)** | **76.5** | **34.4** |
+
 ## Citation
 
 ```bibtex
-@article{hypergaussian2026,
-  title   = {HyperGaussian: Referring 4D Gaussian Splatting},
-  author  = {Anonymous},
-  journal = {arXiv},
-  year    = {2026}
+@inproceedings{hypergaussian2026,
+  title     = {HyperGaussian: Referring 4D Gaussian Splatting},
+  author    = {Anonymous},
+  booktitle = {Proceedings of the 34th ACM International Conference on Multimedia},
+  year      = {2026}
 }
 ```
 

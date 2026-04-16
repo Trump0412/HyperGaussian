@@ -54,12 +54,13 @@
     }
 
     .teaser-section { background-color: #f8f9fa; }
-    .teaser-caption {
-      font-size: 0.95rem;
+    .fig-caption {
+      font-size: 0.92rem;
       color: #636e72;
       text-align: center;
-      margin-top: 1rem;
+      margin-top: 0.9rem;
       font-style: italic;
+      line-height: 1.6;
     }
 
     .method-card {
@@ -84,8 +85,10 @@
     .method-card p { font-size: 0.9rem; color: #636e72; line-height: 1.6; }
 
     .results-table th { background-color: #f0f0f0; font-weight: 700; }
-    .results-table td, .results-table th { padding: 0.75rem 1rem; border: 1px solid #e0e0e0; }
+    .results-table td, .results-table th { padding: 0.75rem 1rem; border: 1px solid #e0e0e0; text-align: center; }
+    .results-table th:first-child, .results-table td:first-child { text-align: left; }
     .results-table tr:hover td { background-color: #f8f9fa; }
+    .results-table .ours td { font-weight: 700; background-color: #f0eeff; }
 
     .bibtex-block {
       background: #2d3436;
@@ -102,12 +105,13 @@
     footer a { color: #74b9ff; }
     footer a:hover { color: #a29bfe; }
 
-    .tag.is-affil {
-      background-color: #f0f0f0;
-      color: #4a4a4a;
-      font-size: 0.85rem;
-      margin: 2px;
+    .paper-figure {
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+      width: 100%;
     }
+
+    .figure-block { margin-bottom: 2.5rem; }
 
     @media (max-width: 768px) {
       .hero .title { font-size: 1.8rem; }
@@ -130,6 +134,7 @@
   <div id="navMenu" class="navbar-menu">
     <div class="navbar-start" style="flex-grow:1; justify-content:center;">
       <a class="navbar-item" href="#abstract">Abstract</a>
+      <a class="navbar-item" href="#benchmark">Benchmark</a>
       <a class="navbar-item" href="#method">Method</a>
       <a class="navbar-item" href="#results">Results</a>
       <a class="navbar-item" href="#citation">Citation</a>
@@ -143,7 +148,7 @@
     <div class="container is-max-desktop">
       <div class="columns is-centered">
         <div class="column has-text-centered">
-          <p class="is-size-6 has-text-weight-semibold" style="color:#a29bfe; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:0.75rem;">Preprint 2026</p>
+          <p class="is-size-6 has-text-weight-semibold" style="color:#a29bfe; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:0.75rem;">ACM MM 2026</p>
           <h1 class="title is-2 publication-title">
             HyperGaussian: Referring 4D Gaussian Splatting
           </h1>
@@ -173,14 +178,14 @@
   </div>
 </section>
 
-<!-- Teaser -->
+<!-- Teaser (Fig1) -->
 <section class="section teaser-section">
   <div class="container is-max-desktop">
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
-        <figure>
-          <img src="assets/teaser.png" alt="HyperGaussian teaser: dynamic 4D Gaussian reconstruction with training-free referring inference" style="border-radius:8px; box-shadow:0 4px 20px rgba(0,0,0,0.12);" />
-          <figcaption class="teaser-caption">
+        <figure class="figure-block">
+          <img src="assets/Fig1.png" alt="HyperGaussian teaser" class="paper-figure" />
+          <figcaption class="fig-caption">
             HyperGaussian reconstructs dynamic scenes as 4D Gaussians and performs training-free referring inference over complex spatiotemporal queries — including temporally varying, multi-target, reasoning-intensive, and zero-target conditions.
           </figcaption>
         </figure>
@@ -196,48 +201,95 @@
     <div class="columns is-centered">
       <div class="column is-four-fifths">
         <p class="abstract-text">
-          Dynamic 4D Gaussian representations have shown strong capability in reconstruction and rendering, yet they remain insufficient for complex natural-language referring understanding in dynamic scenes. Existing 4D Gaussian methods are primarily designed for rendering-oriented dynamic modeling, while current semantic extensions often rely on scene-specific optimization or are evaluated on relatively simple query settings.
+          Dynamic 4D Gaussian representations have shown strong capability in reconstruction and novel-view synthesis, yet they remain insufficient for complex natural-language referring understanding in dynamic scenes. Existing 4D Gaussian methods are primarily designed for rendering-oriented dynamic modeling, while current semantic extensions often rely on scene-specific optimization or are evaluated on relatively simple query settings.
         </p>
         <br>
         <p class="abstract-text">
-          We study <strong>Referring 4D Gaussian Splatting (R4DGS)</strong>, a task that targets realistic 4D referring understanding under temporally varying queries, multi-target and reasoning-intensive queries, and zero-target or distractor queries. To support this task, we introduce <strong>R4D-Bench-QA</strong>, a benchmark with structured query annotations. We further present <strong>HyperGaussian</strong>, a unified framework that couples generalized dynamic Gaussian reconstruction, entity-centric scene structuring, and training-free referring inference. HyperGaussian augments the dynamic Gaussian representation with explicit temporal support, organizes reconstructed Gaussians into a shared entity bank, uses Multimodal Large Language Models (MLLMs) to decompose complex queries into trackable object phrases and referring constraints, and performs query-conditioned grounding without retraining the underlying scene representation.
+          We study <strong>Referring 4D Gaussian Splatting (R4DGS)</strong>, a task that targets realistic 4D referring understanding under temporally varying queries, multi-target and reasoning-intensive queries, and zero-target or distractor queries. To support this task, we introduce <strong>R4D-Bench-QA</strong>, a benchmark comprising 12 dynamic scenes, 266 structured query annotations, and four query categories. We further present <strong>HyperGaussian</strong>, a unified framework that couples generalized dynamic Gaussian reconstruction, entity-centric scene structuring via an <strong>EntityBank</strong>, and training-free referring inference via a Qwen-based <strong>Hyper-Planner</strong>. HyperGaussian decomposes complex queries into trackable object phrases and spatiotemporal constraints, and performs query-conditioned grounding without retraining the underlying scene representation.
         </p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Method -->
+<!-- Task Illustration (Fig2) -->
+<section class="section" style="background-color:#f8f9fa; padding-top:1rem; padding-bottom:2rem;">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <figure class="figure-block">
+          <img src="assets/Fig2.png" alt="R4DGS task illustration" class="paper-figure" />
+          <figcaption class="fig-caption">
+            Illustration of the Referring 4D Gaussian Splatting (R4DGS) task. Given a dynamic scene and a natural-language query, the goal is to identify and segment the referred Gaussian entities across time — covering temporally varying, multi-target, reasoning-intensive, and zero-target query types.
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Benchmark (Fig3) -->
+<section class="section" id="benchmark">
+  <div class="container is-max-desktop">
+    <h2 class="section-title">R4D-Bench-QA</h2>
+    <div class="columns is-centered">
+      <div class="column is-four-fifths">
+        <p class="abstract-text" style="margin-bottom:1.5rem;">
+          R4D-Bench-QA is the first benchmark for Referring 4D Gaussian Splatting. It covers <strong>12 dynamic scenes</strong> with <strong>266 structured query annotations</strong> across four categories: snapshot, temporal-state, exclusion, and reasoning queries. Each query is paired with per-frame Gaussian-level ground-truth segmentation masks.
+        </p>
+        <figure class="figure-block">
+          <img src="assets/Fig3.png" alt="R4D-Bench-QA statistics" class="paper-figure" />
+          <figcaption class="fig-caption">
+            R4D-Bench-QA statistics: query word cloud (left), query composition by category (center), and token-length distribution (right). The benchmark is designed to stress-test spatiotemporal reasoning beyond simple object lookup.
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Method (Fig4) -->
 <section class="section" id="method" style="background-color:#f8f9fa;">
   <div class="container is-max-desktop">
     <h2 class="section-title">Method Overview</h2>
-    <div class="columns is-multiline is-centered">
+    <div class="columns is-centered">
+      <div class="column is-four-fifths">
+        <figure class="figure-block">
+          <img src="assets/Fig4.png" alt="HyperGaussian framework overview" class="paper-figure" />
+          <figcaption class="fig-caption">
+            Overview of the HyperGaussian framework. The pipeline consists of four stages: (1) dynamic 4D Gaussian reconstruction with a contextual time warp; (2) static entity segmentation via Grounded-SAM2; (3) semantic assignment to build the EntityBank; and (4) training-free spatiotemporal grounding via the Qwen-based Hyper-Planner.
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="columns is-multiline is-centered" style="margin-top:1rem;">
       <div class="column is-half-tablet is-one-quarter-desktop">
         <div class="method-card">
           <div class="step-num">Stage 1</div>
           <h3>Dynamic Reconstruction</h3>
-          <p>Reconstruct the scene as 4D Gaussians with explicit temporal extent and a learned contextual time warp.</p>
+          <p>Reconstruct the scene as 4D Gaussians with explicit temporal extent and a learned contextual time warp for deformable scene modeling.</p>
         </div>
       </div>
       <div class="column is-half-tablet is-one-quarter-desktop">
         <div class="method-card">
           <div class="step-num">Stage 2</div>
-          <h3>Entity Bank Construction</h3>
-          <p>Segment and track Gaussians into a shared entity bank using Grounded-SAM2 and temporal consistency.</p>
+          <h3>Static Segmentation</h3>
+          <p>Apply Grounded-SAM2 on reference frames to obtain per-entity masks, then propagate them across time via temporal consistency.</p>
         </div>
       </div>
       <div class="column is-half-tablet is-one-quarter-desktop">
         <div class="method-card">
           <div class="step-num">Stage 3</div>
-          <h3>Query Decomposition</h3>
-          <p>Use an MLLM to parse complex natural-language queries into trackable object phrases and spatiotemporal constraints.</p>
+          <h3>EntityBank Construction</h3>
+          <p>Cluster Gaussians into a shared entity-centric semantic memory (EntityBank) with visual and semantic embeddings per entity.</p>
         </div>
       </div>
       <div class="column is-half-tablet is-one-quarter-desktop">
         <div class="method-card">
           <div class="step-num">Stage 4</div>
-          <h3>Training-Free Grounding</h3>
-          <p>Score entity candidates against decomposed query constraints without any scene-specific retraining.</p>
+          <h3>Hyper-Planner Grounding</h3>
+          <p>Use the Qwen-based Hyper-Planner to decompose queries into object phrases, attributes, relations, temporal cues, and cardinality constraints for training-free grounding.</p>
         </div>
       </div>
     </div>
@@ -250,12 +302,17 @@
     <h2 class="section-title">Experimental Results</h2>
     <div class="columns is-centered">
       <div class="column is-four-fifths">
-        <p class="has-text-centered" style="color:#636e72; margin-bottom:1rem;">Reconstruction quality on HyperNeRF scenes</p>
-        <div class="table-container">
-          <table class="table is-fullwidth is-striped results-table">
+
+        <p class="has-text-centered" style="color:#2d3436; font-weight:600; font-size:1rem; margin-bottom:0.75rem;">
+          Joint evaluation on R4D-Bench-QA (referring + reconstruction)
+        </p>
+        <div class="table-container" style="margin-bottom:2.5rem;">
+          <table class="table is-fullwidth results-table">
             <thead>
               <tr>
-                <th>Scene</th>
+                <th>Method</th>
+                <th>Acc ↑</th>
+                <th>vIoU ↑</th>
                 <th>PSNR ↑</th>
                 <th>SSIM ↑</th>
                 <th>LPIPS ↓</th>
@@ -263,42 +320,103 @@
             </thead>
             <tbody>
               <tr>
-                <td>keyboard</td>
-                <td>28.41</td>
-                <td>0.887</td>
-                <td>0.207</td>
+                <td>Segment then Splat</td>
+                <td>55.6</td><td>28.4</td><td>20.3208</td><td>0.7027</td><td>0.3971</td>
+              </tr>
+              <tr>
+                <td>4D LangSplat</td>
+                <td>58.4</td><td>32.1</td><td>20.3208</td><td>0.7027</td><td>0.3971</td>
+              </tr>
+              <tr class="ours">
+                <td>HyperGaussian (Ours)</td>
+                <td>76.5</td><td>34.4</td><td>20.4159</td><td>0.7069</td><td>0.4082</td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        <p class="has-text-centered" style="color:#636e72; margin-top:2rem; margin-bottom:1rem;">Referring evaluation on public benchmarks</p>
-        <div class="table-container">
-          <table class="table is-fullwidth is-striped results-table">
+        <p class="has-text-centered" style="color:#2d3436; font-weight:600; font-size:1rem; margin-bottom:0.75rem;">
+          Generalization on 4D LangSplat HyperNeRF split (americano, split-cookie, espresso)
+        </p>
+        <div class="table-container" style="margin-bottom:2.5rem;">
+          <table class="table is-fullwidth results-table">
             <thead>
               <tr>
-                <th>Benchmark</th>
+                <th>Method</th>
                 <th>Acc ↑</th>
                 <th>vIoU ↑</th>
-                <th>tIoU ↑</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>4DLangSplat (americano)</td>
-                <td>97.72%</td>
-                <td>69.35%</td>
-                <td>94.34%</td>
-              </tr>
-              <tr>
-                <td>R4D-Bench-QA (snapshot)</td>
-                <td>97.50%</td>
-                <td>8.10%</td>
-                <td>97.49%</td>
+              <tr><td>LangSplat</td><td>54.27</td><td>24.13</td></tr>
+              <tr><td>Deformable CLIP</td><td>65.01</td><td>45.37</td></tr>
+              <tr><td>Non-Status Field</td><td>84.58</td><td>62.00</td></tr>
+              <tr><td>4D LangSplat</td><td>88.86</td><td>66.14</td></tr>
+              <tr class="ours">
+                <td>HyperGaussian (Ours)</td><td>91.62</td><td>66.48</td>
               </tr>
             </tbody>
           </table>
         </div>
+
+        <p class="has-text-centered" style="color:#2d3436; font-weight:600; font-size:1rem; margin-bottom:0.75rem;">
+          Module ablation on R4D-Bench-QA
+        </p>
+        <div class="table-container" style="margin-bottom:2rem;">
+          <table class="table is-fullwidth results-table">
+            <thead>
+              <tr>
+                <th>Variant</th>
+                <th>Acc ↑</th>
+                <th>vIoU ↑</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>4DGS reconstruction (no HyperGS)</td><td>62.9</td><td>31.5</td></tr>
+              <tr><td>w/o Stage 1 static segmentation</td><td>48.6</td><td>17.2</td></tr>
+              <tr><td>w/o Stage 2 semantic assignment</td><td>62.9</td><td>29.8</td></tr>
+              <tr><td>w/o Stage 3 spatio-temporal reasoning</td><td>36.0</td><td>26.1</td></tr>
+              <tr class="ours">
+                <td>HyperGaussian (full)</td><td>76.5</td><td>34.4</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Qualitative Results (Fig5_n) -->
+<section class="section" style="background-color:#f8f9fa;">
+  <div class="container is-max-desktop">
+    <h2 class="section-title">Qualitative Comparison</h2>
+    <div class="columns is-centered has-text-centered">
+      <div class="column">
+        <figure class="figure-block">
+          <img src="assets/Fig5_n.png" alt="Qualitative comparison on R4D-Bench-QA" class="paper-figure" />
+          <figcaption class="fig-caption">
+            Qualitative comparison on R4D-Bench-QA. Each block shows a temporal-state query (top) and an exclusion-style query (bottom). Rows: RGB input, ground truth, HyperGaussian (ours), Segment then Splat, 4D LangSplat. HyperGaussian correctly handles temporally conditioned and negation-based queries where baselines fail.
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Additional Results (appen_fig1) -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="section-title">Additional Results</h2>
+    <div class="columns is-centered has-text-centered">
+      <div class="column">
+        <figure class="figure-block">
+          <img src="assets/appen_fig1.png" alt="Additional qualitative results" class="paper-figure" />
+          <figcaption class="fig-caption">
+            Additional qualitative results across diverse scenes and query types, demonstrating HyperGaussian's generalization to multi-target, reasoning-intensive, and zero-target queries.
+          </figcaption>
+        </figure>
       </div>
     </div>
   </div>
@@ -310,11 +428,11 @@
     <h2 class="section-title">Citation</h2>
     <div class="columns is-centered">
       <div class="column is-four-fifths">
-        <pre class="bibtex-block">@article{hypergaussian2026,
-  title   = {HyperGaussian: Referring 4D Gaussian Splatting},
-  author  = {Anonymous},
-  journal = {arXiv},
-  year    = {2026}
+        <pre class="bibtex-block">@inproceedings{hypergaussian2026,
+  title     = {HyperGaussian: Referring 4D Gaussian Splatting},
+  author    = {Anonymous},
+  booktitle = {Proceedings of the 34th ACM International Conference on Multimedia},
+  year      = {2026}
 }</pre>
       </div>
     </div>
@@ -331,7 +449,7 @@
           This project builds on
           <a href="https://github.com/hustvl/4DGaussians" target="_blank">4DGaussians</a>,
           <a href="https://github.com/IDEA-Research/Grounded-SAM-2" target="_blank">Grounded-SAM2</a>,
-          and related dynamic scene understanding toolchains.
+          and <a href="https://github.com/QwenLM/Qwen" target="_blank">Qwen</a>.
           The project page template is adapted from
           <a href="https://li-hao-yuan.github.io/GeoThinker/" target="_blank">GeoThinker</a>
           and <a href="https://nerfies.github.io/" target="_blank">Nerfies</a>.
@@ -345,14 +463,13 @@
 <footer class="footer">
   <div class="content has-text-centered">
     <p>
-      <strong style="color:#dfe6e9;">HyperGaussian</strong> &bull; 2026 &bull;
+      <strong style="color:#dfe6e9;">HyperGaussian</strong> &bull; ACM MM 2026 &bull;
       <a href="https://github.com/Trump0412/HyperGaussian">GitHub</a>
     </p>
   </div>
 </footer>
 
 <script>
-  // Navbar burger toggle
   document.addEventListener('DOMContentLoaded', function() {
     var burger = document.querySelector('.navbar-burger');
     var menu = document.getElementById(burger.dataset.target);
