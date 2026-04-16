@@ -18,7 +18,6 @@
 
     .hero { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); }
     .hero .title { color: #ffffff; font-family: 'Google Sans', sans-serif; }
-    .hero .subtitle { color: #c8d6e5; }
 
     .author-block { display: inline-block; margin: 0 8px; }
     .author-block a { color: #74b9ff; font-weight: 600; }
@@ -63,6 +62,7 @@
       line-height: 1.6;
     }
 
+    /* Method layout: 1 wide card + 3 equal cards */
     .method-card {
       background: #fff;
       border-radius: 12px;
@@ -73,16 +73,28 @@
       transition: transform 0.2s, box-shadow 0.2s;
     }
     .method-card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0,0,0,0.12); }
-    .method-card .step-num {
-      font-size: 0.75rem;
+    .method-card.is-recon { border-top-color: #0984e3; }
+    .method-card .step-label {
+      font-size: 0.72rem;
       font-weight: 800;
       letter-spacing: 0.1em;
       text-transform: uppercase;
       color: #6c5ce7;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.4rem;
     }
+    .method-card.is-recon .step-label { color: #0984e3; }
     .method-card h3 { font-size: 1.05rem; font-weight: 700; color: #2d3436; margin-bottom: 0.5rem; }
     .method-card p { font-size: 0.9rem; color: #636e72; line-height: 1.6; }
+
+    .planner-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #6c5ce7;
+      text-align: center;
+      margin-bottom: 0.6rem;
+    }
 
     .results-table th { background-color: #f0f0f0; font-weight: 700; }
     .results-table td, .results-table th { padding: 0.75rem 1rem; border: 1px solid #e0e0e0; text-align: center; }
@@ -228,7 +240,7 @@
   </div>
 </section>
 
-<!-- Benchmark (Fig3) -->
+<!-- Benchmark (Fig4 — benchmark statistics) -->
 <section class="section" id="benchmark">
   <div class="container is-max-desktop">
     <h2 class="section-title">R4D-Bench-QA</h2>
@@ -238,7 +250,7 @@
           R4D-Bench-QA is the first benchmark for Referring 4D Gaussian Splatting. It covers <strong>12 dynamic scenes</strong> with <strong>266 structured query annotations</strong> across four categories: snapshot, temporal-state, exclusion, and reasoning queries. Each query is paired with per-frame Gaussian-level ground-truth segmentation masks.
         </p>
         <figure class="figure-block">
-          <img src="assets/Fig3.png" alt="R4D-Bench-QA statistics" class="paper-figure" />
+          <img src="assets/Fig4.png" alt="R4D-Bench-QA statistics" class="paper-figure" />
           <figcaption class="fig-caption">
             R4D-Bench-QA statistics: query word cloud (left), query composition by category (center), and token-length distribution (right). The benchmark is designed to stress-test spatiotemporal reasoning beyond simple object lookup.
           </figcaption>
@@ -248,51 +260,68 @@
   </div>
 </section>
 
-<!-- Method (Fig4) -->
+<!-- Method (Fig3 — framework overview) -->
 <section class="section" id="method" style="background-color:#f8f9fa;">
   <div class="container is-max-desktop">
     <h2 class="section-title">Method Overview</h2>
     <div class="columns is-centered">
       <div class="column is-four-fifths">
         <figure class="figure-block">
-          <img src="assets/Fig4.png" alt="HyperGaussian framework overview" class="paper-figure" />
+          <img src="assets/Fig3.png" alt="HyperGaussian framework overview" class="paper-figure" />
           <figcaption class="fig-caption">
-            Overview of the HyperGaussian framework. The pipeline consists of four stages: (1) dynamic 4D Gaussian reconstruction with a contextual time warp; (2) static entity segmentation via Grounded-SAM2; (3) semantic assignment to build the EntityBank; and (4) training-free spatiotemporal grounding via the Qwen-based Hyper-Planner.
+            Overview of the HyperGaussian framework. Dynamic Reconstruction builds the 4D Gaussian scene representation. The Qwen-based Hyper-Planner then drives three sequential stages: static entity segmentation via Grounded-SAM2, semantic assignment to populate the EntityBank, and training-free spatiotemporal grounding conditioned on the decomposed query.
           </figcaption>
         </figure>
       </div>
     </div>
 
-    <div class="columns is-multiline is-centered" style="margin-top:1rem;">
-      <div class="column is-half-tablet is-one-quarter-desktop">
-        <div class="method-card">
-          <div class="step-num">Stage 1</div>
-          <h3>Dynamic Reconstruction</h3>
-          <p>Reconstruct the scene as 4D Gaussians with explicit temporal extent and a learned contextual time warp for deformable scene modeling.</p>
-        </div>
-      </div>
-      <div class="column is-half-tablet is-one-quarter-desktop">
-        <div class="method-card">
-          <div class="step-num">Stage 2</div>
-          <h3>Static Segmentation</h3>
-          <p>Apply Grounded-SAM2 on reference frames to obtain per-entity masks, then propagate them across time via temporal consistency.</p>
-        </div>
-      </div>
-      <div class="column is-half-tablet is-one-quarter-desktop">
-        <div class="method-card">
-          <div class="step-num">Stage 3</div>
-          <h3>EntityBank Construction</h3>
-          <p>Cluster Gaussians into a shared entity-centric semantic memory (EntityBank) with visual and semantic embeddings per entity.</p>
-        </div>
-      </div>
-      <div class="column is-half-tablet is-one-quarter-desktop">
-        <div class="method-card">
-          <div class="step-num">Stage 4</div>
-          <h3>Hyper-Planner Grounding</h3>
-          <p>Use the Qwen-based Hyper-Planner to decompose queries into object phrases, attributes, relations, temporal cues, and cardinality constraints for training-free grounding.</p>
+    <!-- Dynamic Reconstruction (full width) -->
+    <div class="columns is-centered" style="margin-top:1.5rem;">
+      <div class="column is-four-fifths">
+        <div class="method-card is-recon">
+          <div class="step-label">Dynamic Reconstruction</div>
+          <h3>4D Gaussian Scene Representation</h3>
+          <p>The scene is reconstructed as a set of 4D Gaussians with explicit temporal extent. A learned contextual time warp models deformable motion, producing a compact and differentiable dynamic scene representation that serves as the shared substrate for all downstream semantic stages.</p>
         </div>
       </div>
     </div>
+
+    <!-- Hyper-Planner label -->
+    <div class="columns is-centered" style="margin-top:1.5rem; margin-bottom:0.5rem;">
+      <div class="column is-four-fifths">
+        <p class="planner-label">Hyper-Planner (Qwen-based MLLM) — 3-stage referring pipeline</p>
+      </div>
+    </div>
+
+    <!-- 3 Hyper-Planner stages -->
+    <div class="columns is-centered">
+      <div class="column is-four-fifths">
+        <div class="columns is-multiline">
+          <div class="column is-one-third">
+            <div class="method-card">
+              <div class="step-label">Stage 1</div>
+              <h3>Static Entity Segmentation</h3>
+              <p>Grounded-SAM2 is applied to reference frames to obtain per-entity masks. Masks are propagated across time via temporal consistency to associate each Gaussian with a persistent entity identity.</p>
+            </div>
+          </div>
+          <div class="column is-one-third">
+            <div class="method-card">
+              <div class="step-label">Stage 2</div>
+              <h3>Semantic Assignment</h3>
+              <p>Each entity is assigned visual and semantic embeddings from representative crops and geometric priors. The results are stored in the <strong>EntityBank</strong> — a shared entity-centric scene memory reused across all queries.</p>
+            </div>
+          </div>
+          <div class="column is-one-third">
+            <div class="method-card">
+              <div class="step-label">Stage 3</div>
+              <h3>Spatio-Temporal Grounding</h3>
+              <p>The Hyper-Planner decomposes the natural-language query into object phrases, attributes, relations, temporal cues, and cardinality constraints. Candidate entities from the EntityBank are scored and selected without any scene-specific retraining.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </section>
 
