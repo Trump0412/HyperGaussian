@@ -9,8 +9,8 @@ for candidate in (REPO_ROOT, EXTERNAL_ROOT):
     if candidate_str not in sys.path:
         sys.path.insert(0, candidate_str)
 
-from gaussian_stellar.semantics import render_hypernerf_query_video
-from gaussian_stellar.semantics.trase_bridge import transfer_trase_semantics
+from hypergaussian.semantics import render_hypernerf_query_video
+from hypergaussian.semantics.trase_bridge import transfer_trase_semantics
 
 
 def main() -> None:

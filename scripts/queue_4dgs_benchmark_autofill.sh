@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-GS_ROOT="/root/autodl-tmp/GaussianStellar"
+GS_ROOT="/root/autodl-tmp/HyperGaussian"
 BENCHMARK_JSON="/root/autodl-tmp/data/Ours_benchmark.json"
 REPORT_DIR="${GS_ROOT}/reports/4dgs_baseline_autofill"
 RUN_NAMESPACE="baseline_4dgs_20260330"

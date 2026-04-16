@@ -154,7 +154,7 @@ def export_pointcloud_video(
         ax.set_zlabel("")
         ax.grid(False)
         ax.set_title(
-            f"GaussianStellar point cloud  t={float(time_values[frame_id]):.3f}  points={int(frame_xyz.shape[0])}",
+            f"HyperGaussian point cloud  t={float(time_values[frame_id]):.3f}  points={int(frame_xyz.shape[0])}",
             color="white",
             pad=18,
         )

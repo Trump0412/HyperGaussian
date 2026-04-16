@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+title: "HyperGaussian: Referring 4D Gaussian Splatting"
+message: "If you use this project, please cite the corresponding paper."
+type: software
+authors:
+  - family-names: "HyperGaussian Team"
+    given-names: "R4DGS"
+repository-code: "https://github.com/Trump0412/HyperGaussian"
+license: "MIT"
+abstract: >-
+  HyperGaussian is a unified framework for dynamic 4D Gaussian reconstruction
+  and training-free referring inference under complex spatiotemporal queries.
+keywords:
+  - 4D Gaussian Splatting
+  - Dynamic Scene Reconstruction
+  - Referring Understanding
+  - Multimodal Reasoning

@@ -12,7 +12,7 @@
 # ============================================================
 set -euo pipefail
 
-GS_ROOT="${GS_ROOT:-/root/autodl-tmp/GaussianStellar}"
+GS_ROOT="${GS_ROOT:-/root/autodl-tmp/HyperGaussian}"
 REPORT_DIR="${GS_ROOT}/reports/ours_recon_same_protocol"
 mkdir -p "${REPORT_DIR}"
 LOG="${REPORT_DIR}/eval_queue.log"
@@ -26,7 +26,7 @@ python3 - <<'PY' > "${REPORT_DIR}/ours_runs_manifest.tsv"
 import os
 from pathlib import Path
 
-GS_ROOT = Path(os.environ.get("GS_ROOT", "/root/autodl-tmp/GaussianStellar"))
+GS_ROOT = Path(os.environ.get("GS_ROOT", "/root/autodl-tmp/HyperGaussian"))
 
 # run_dir, dataset, scene_name
 RUNS = [

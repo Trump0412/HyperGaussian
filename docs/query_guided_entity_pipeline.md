@@ -1,6 +1,6 @@
 # Query-Guided Entity Pipeline
 
-GaussianStellar now has a detector-guided proposal stage for query-conditioned entity discovery.
+HyperGaussian now has a detector-guided proposal stage for query-conditioned entity discovery.
 
 ## Pipeline
 
@@ -14,7 +14,7 @@ GaussianStellar now has a detector-guided proposal stage for query-conditioned e
 
 3. `proposal/worldtube reassignment`
    - Reassign Gaussians with our worldtube trajectories and support windows.
-   - Keep the final representation in GaussianStellar space, not in detector space.
+   - Keep the final representation in HyperGaussian space, not in detector space.
 
 4. `native/Qwen semantics`
    - Render every surviving entity.

@@ -1,8 +1,8 @@
-# GaussianStellar System Design
+# HyperGaussian System Design
 
 ## Goal
 
-GaussianStellar should not stop at "better time conditioning".
+HyperGaussian should not stop at "better time conditioning".
 
 Its target is a reusable dynamic 4D base with:
 
@@ -22,12 +22,12 @@ Recommended role:
 
 1. Use DA3 to predict strong initial geometry when the dataset does not already provide a good point cloud.
 2. Convert DA3 outputs into the initial Gaussian or tube bank.
-3. Continue optimizing with GaussianStellar so temporal structure, render quality, and downstream clustering remain under our control.
+3. Continue optimizing with HyperGaussian so temporal structure, render quality, and downstream clustering remain under our control.
 
 DA3 should not replace the main 4D optimization path because:
 
 - DA3 is a feed-forward geometry model
-- GaussianStellar needs scene-specific spacetime refinement
+- HyperGaussian needs scene-specific spacetime refinement
 - later dynamic segmentation depends on stable trajectories and entity-level exports
 
 ## Current baseline
@@ -163,7 +163,7 @@ The renderer is not the only product. The downstream artifacts for clustering an
 ## Next implementation steps
 
 1. Finish the DA3 bootstrap path so it writes a manifest plus exported Gaussian artifacts on a real scene.
-2. Add a converter from DA3 Gaussian output into GaussianStellar initial state.
+2. Add a converter from DA3 Gaussian output into HyperGaussian initial state.
 3. Improve the current `entitybank` clustering from a simple greedy feature pass to occupancy-aware and co-visibility-aware grouping.
 4. Add per-entity semantic feature slots so `entities.json` can carry dynamic descriptors instead of empty placeholders.
 5. Use that enriched entity bank as the input to dynamic semantic segmentation.

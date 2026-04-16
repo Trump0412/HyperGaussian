@@ -27,12 +27,12 @@ source_candidates = {
     "misc": [
         Path("/root/autodl-tmp/data/HyperNeRF/misc"),
         Path("/root/autodl-tmp/data/HyperNeRF"),
-        Path("/root/autodl-tmp/GaussianStellar/data/hypernerf/misc"),
+        Path("/root/autodl-tmp/HyperGaussian/data/hypernerf/misc"),
     ],
     "interp": [
         Path("/root/autodl-tmp/data/HyperNeRF/interp"),
         Path("/root/autodl-tmp/data/HyperNeRF"),
-        Path("/root/autodl-tmp/GaussianStellar/data/hypernerf/interp"),
+        Path("/root/autodl-tmp/HyperGaussian/data/hypernerf/interp"),
     ],
 }
 

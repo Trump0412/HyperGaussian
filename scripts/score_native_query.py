@@ -9,7 +9,7 @@ for candidate in (REPO_ROOT, EXTERNAL_ROOT):
     if candidate_str not in sys.path:
         sys.path.insert(0, candidate_str)
 
-from gaussian_stellar.semantics import score_native_query
+from hypergaussian.semantics import score_native_query
 
 
 def main() -> None:

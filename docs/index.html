@@ -4,21 +4,19 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>HyperGaussian: Referring 4D Gaussian Splatting</title>
-  <meta name="description" content="HyperGaussian: Referring 4D Gaussian Splatting" />
+  <meta name="description" content="Official project page for HyperGaussian: Referring 4D Gaussian Splatting" />
   <link rel="stylesheet" href="assets/githubio.css" />
 </head>
 <body>
   <header class="hero">
     <div class="hero__inner">
-      <p class="eyebrow">Referring 4D Gaussian Splatting</p>
+      <p class="eyebrow">CVPR/ICCV/NeurIPS Style Open Project Page</p>
       <h1>HyperGaussian: <span>Referring 4D Gaussian Splatting</span></h1>
-      <p class="lead">
-        A unified framework for generalized dynamic Gaussian reconstruction and training-free referring inference.
-      </p>
+      <p class="lead">A unified framework for dynamic 4D Gaussian reconstruction and training-free referring understanding.</p>
       <div class="links">
-        <a href="https://github.com/<ORG>/<REPO>" target="_blank" rel="noopener">GitHub</a>
-        <a href="https://<HG-LINK>" target="_blank" rel="noopener">HG</a>
-        <a href="https://arxiv.org/abs/<ARXIV-ID>" target="_blank" rel="noopener">arXiv</a>
+        <a href="https://github.com/<ORG>/<REPO>" target="_blank" rel="noopener">Code</a>
+        <a href="https://<HG-LINK>" target="_blank" rel="noopener">Project</a>
+        <a href="https://arxiv.org/abs/<ARXIV-ID>" target="_blank" rel="noopener">Paper</a>
       </div>
     </div>
     <div class="hero__mesh" aria-hidden="true"></div>
@@ -28,7 +26,7 @@
     <section class="panel">
       <h2>Abstract</h2>
       <p>
-        Dynamic 4D Gaussian representations have shown strong capability in reconstruction and rendering, yet they remain insufficient for complex natural-language referring understanding in dynamic scenes. Existing 4D Gaussian methods are primarily designed for rendering-oriented dynamic modeling, while current semantic extensions often rely on scene-specific semantic optimization or are evaluated on relatively simple query settings. In this paper, we study Referring 4D Gaussian Splatting (R4DGS), a task that targets realistic 4D referring understanding under temporally varying queries, multi-target and reasoning-intensive queries, and zero-target or distractor queries. To support this task, we introduce R4D-Bench-QA, a benchmark with structured query annotations. We further present HyperGaussian, a unified framework that couples generalized dynamic Gaussian reconstruction, entity-centric scene structuring, and training-free referring inference. HyperGaussian augments the dynamic Gaussian representation with explicit temporal support, organizes reconstructed Gaussians into a shared entitybank, uses Multimodal Large Language Models (MLLMs) to decompose complex queries into trackable object phrases and referring constraints, and performs query-conditioned grounding without retraining the underlying scene representation. Experiments on R4D-Bench-QA and public benchmarks show that HyperGaussian preserves competitive reconstruction quality relative to a 4DGS baseline and improves grounding under complex spatiotemporal expressions.
+        We study Referring 4D Gaussian Splatting (R4DGS) for realistic query understanding in dynamic scenes, including temporally varying, multi-target, and distractor queries. HyperGaussian couples generalized dynamic Gaussian reconstruction, entity-centric scene structuring, and training-free referring inference. It augments dynamic Gaussians with explicit temporal support, builds a shared entitybank, decomposes complex natural-language queries into trackable phrases and constraints, and performs query-conditioned grounding without retraining scene-specific representations.
       </p>
     </section>
 
@@ -44,7 +42,7 @@
           </ul>
         </article>
         <article>
-          <h3>OursBench (Snapshot)</h3>
+          <h3>R4D-Bench-QA (Snapshot)</h3>
           <ul>
             <li>Acc: <strong>97.4990%</strong></li>
             <li>vIoU: <strong>8.1029%</strong></li>
@@ -52,7 +50,7 @@
           </ul>
         </article>
         <article>
-          <h3>4DLangSplat Americano</h3>
+          <h3>4DLangSplat (Americano)</h3>
           <ul>
             <li>Acc: <strong>97.72%</strong></li>
             <li>vIoU: <strong>69.35%</strong></li>
@@ -63,35 +61,20 @@
     </section>
 
     <section class="panel">
-      <h2>Reproducibility</h2>
-      <p>
-        Reproduction details and environment-locked commands are documented in
-        <a href="reproducibility_20260416.md">docs/reproducibility_20260416.md</a>.
-      </p>
-      <p>
-        Open-source readiness audit is available at
-        <a href="open_source_readiness_20260416.md">docs/open_source_readiness_20260416.md</a>.
-      </p>
-    </section>
-
-    <section class="panel">
-      <h2>Data Release</h2>
-      <p>
-        OursBench annotation package (to be released):
-        <a href="https://huggingface.co/datasets/<ORG>/GaussianStellar-OursBench" target="_blank" rel="noopener">
-          HuggingFace Dataset Placeholder
-        </a>
-      </p>
+      <h2>Resources</h2>
+      <p>Reproducibility report: <a href="reproducibility_20260416.md">docs/reproducibility_20260416.md</a></p>
+      <p>Open-source readiness notes: <a href="open_source_readiness_20260416.md">docs/open_source_readiness_20260416.md</a></p>
+      <p>R4D-Bench-QA (planned): <a href="https://huggingface.co/datasets/<ORG>/HyperGaussian-R4D-Bench-QA" target="_blank" rel="noopener">Hugging Face Dataset</a></p>
     </section>
 
     <section class="panel">
       <h2>Contact</h2>
-      <p>Email: <a href="mailto:2286793492@qq.com">2286793492@qq.com</a></p>
+      <p><a href="mailto:2286793492@qq.com">2286793492@qq.com</a></p>
     </section>
   </main>
 
   <footer>
-    <p>HyperGaussian / GaussianStellar • 2026</p>
+    <p>HyperGaussian • 2026</p>
   </footer>
 </body>
 </html>

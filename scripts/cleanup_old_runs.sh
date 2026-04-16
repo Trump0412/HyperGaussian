@@ -4,8 +4,8 @@
 # 只删除明确不需要的ablation/comparison/非benchmark场景runs
 set -uo pipefail
 
-RUNS_DIR="/root/autodl-tmp/GaussianStellar/runs"
-LOG="/root/autodl-tmp/GaussianStellar/reports/ours_benchmark_eval/cleanup.log"
+RUNS_DIR="/root/autodl-tmp/HyperGaussian/runs"
+LOG="/root/autodl-tmp/HyperGaussian/reports/ours_benchmark_eval/cleanup.log"
 mkdir -p "$(dirname "$LOG")"
 
 log_msg() { echo "[$(date '+%H:%M:%S')] $*" | tee -a "$LOG"; }
@@ -164,4 +164,4 @@ log_msg "总计释放约 ${TOTAL_FREED} MB (≈ $((TOTAL_FREED / 1024)) GB)"
 log_msg "当前磁盘: $(df -h /root/autodl-tmp | tail -1 | awk '{print $4, "available"}')"
 log_msg ""
 log_msg "保留的benchmark必要runs:"
-ls /root/autodl-tmp/GaussianStellar/runs/ | tee -a "$LOG"
+ls /root/autodl-tmp/HyperGaussian/runs/ | tee -a "$LOG"

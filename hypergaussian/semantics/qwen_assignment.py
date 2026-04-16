@@ -24,7 +24,7 @@ for _candidate in (_PROJECT_ROOT,):
 
 def _load_camera_class():
     utils_path = _UPSTREAM_ROOT / "scene" / "utils.py"
-    spec = importlib.util.spec_from_file_location("gaussianstellar_scene_utils_qwen", utils_path)
+    spec = importlib.util.spec_from_file_location("hypergaussian_scene_utils_qwen", utils_path)
     if spec is None or spec.loader is None:
         raise ImportError(f"Unable to load Camera utilities from {utils_path}")
     module = importlib.util.module_from_spec(spec)
@@ -37,7 +37,7 @@ Camera = _load_camera_class()
 
 DEFAULT_QWEN_MODEL = Path("/root/autodl-tmp/models/Qwen3-VL-8B-Instruct")
 
-ENTITY_PROMPT_TEMPLATE = """You are assigning continuous semantics to one GaussianStellar 4D worldtube entity.
+ENTITY_PROMPT_TEMPLATE = """You are assigning continuous semantics to one HyperGaussian 4D worldtube entity.
 You are given a few representative crops from the same entity across time and a geometry prior derived from the 4D reconstruction.
 Your job is to identify the entity and describe its continuous semantics over time.
 
@@ -102,7 +102,7 @@ def _import_transformers():
         import transformers  # type: ignore
     except ModuleNotFoundError as exc:
         raise RuntimeError(
-            "Missing Python dependency 'transformers'. Install it inside the GaussianStellar env, "
+            "Missing Python dependency 'transformers'. Install it inside the HyperGaussian env, "
             "for example with: pip install transformers accelerate sentencepiece"
         ) from exc
     return transformers
@@ -602,7 +602,7 @@ def export_qwen_semantic_assignments(
         assignment = json.loads(json.dumps(bootstrap_assignment))
         assignment["bootstrap_text"] = assignment.get("native_text", {})
         assignment["bootstrap_role_scores"] = assignment.get("role_scores", {})
-        assignment["semantic_source"] = "gaussianstellar_native_bootstrap"
+        assignment["semantic_source"] = "hypergaussian_native_bootstrap"
         assignment["qwen_enabled"] = False
         assignment["qwen_model"] = str(model_path)
         assignment["qwen_prompt"] = None
@@ -750,7 +750,7 @@ def export_qwen_semantic_assignments(
             prompt_groups["interaction"],
         )
 
-        assignment["semantic_source"] = "gaussianstellar_qwen"
+        assignment["semantic_source"] = "hypergaussian_qwen"
         assignment["qwen_enabled"] = True
         assignment["qwen_prompt"] = prompt
         assignment["qwen_raw_output"] = raw_output
@@ -778,7 +778,7 @@ def export_qwen_semantic_assignments(
         entity_copy = dict(entity)
         assignment = qwen_assignment_map.get(int(entity["id"]))
         if assignment is not None:
-            entity_copy["semantic_source"] = assignment.get("semantic_source", "gaussianstellar_native_bootstrap")
+            entity_copy["semantic_source"] = assignment.get("semantic_source", "hypergaussian_native_bootstrap")
             entity_copy["qwen_enabled"] = bool(assignment.get("qwen_enabled", False))
             entity_copy["qwen_role_scores"] = assignment.get("qwen_role_scores", {})
             entity_copy["qwen_concept_tags"] = assignment.get("concept_tags", [])
@@ -789,7 +789,7 @@ def export_qwen_semantic_assignments(
 
     output_payload = {
         **native_payload,
-        "semantic_source": "gaussianstellar_qwen",
+        "semantic_source": "hypergaussian_qwen",
         "qwen_model": str(model_path),
         "num_assignments": int(len(qwen_records)),
         "num_qwen_assignments": int(qwen_count),
@@ -804,7 +804,7 @@ def export_qwen_semantic_assignments(
         {
             **entities_payload,
             "entities": enriched_entities,
-            "semantic_source": "gaussianstellar_qwen",
+            "semantic_source": "hypergaussian_qwen",
             "qwen_model": str(model_path),
             "num_qwen_assignments": int(qwen_count),
         },

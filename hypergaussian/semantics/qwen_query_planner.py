@@ -13,7 +13,7 @@ from .source_images import resolve_dataset_image_entries
 DEFAULT_QWEN_MODEL = Path("/root/autodl-tmp/models/Qwen3-VL-8B-Instruct")
 
 
-QUERY_PLAN_TEMPLATE = """You are planning query-conditioned 4D entity discovery for GaussianStellar.
+QUERY_PLAN_TEMPLATE = """You are planning query-conditioned 4D entity discovery for HyperGaussian.
 You will be given a natural-language query and a small set of uniformly sampled video frames.
 Your job is to understand which objects appear in the full video, which objects are the true query subjects,
 and whether the action creates a successor object state that should be tracked.

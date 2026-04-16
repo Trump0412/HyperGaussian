@@ -2,7 +2,7 @@
 
 ## Objective
 
-Move GaussianStellar from:
+Move HyperGaussian from:
 
 - global full-scene clustering
 

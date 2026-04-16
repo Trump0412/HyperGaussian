@@ -6,7 +6,7 @@
 # ============================================================
 set -euo pipefail
 
-GS_ROOT="/root/autodl-tmp/GaussianStellar"
+GS_ROOT="/root/autodl-tmp/HyperGaussian"
 REPORT_DIR="${GS_ROOT}/reports/4dgs_baseline"
 mkdir -p "${REPORT_DIR}"
 LOG="${REPORT_DIR}/train_queue.log"

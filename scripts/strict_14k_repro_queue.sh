@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-GS_ROOT="/root/autodl-tmp/GaussianStellar"
+GS_ROOT="/root/autodl-tmp/HyperGaussian"
 REPORT_DIR="${GS_ROOT}/reports/strict_14k_repro"
 LOG="${REPORT_DIR}/queue.log"
 RESULTS_JSON="${REPORT_DIR}/results_latest.json"

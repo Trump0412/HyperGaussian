@@ -1,4 +1,4 @@
-# HyperGaussian / GaussianStellar 方法说明
+# HyperGaussian / HyperGaussian 方法说明
 
 ## 1. 方法目标
 

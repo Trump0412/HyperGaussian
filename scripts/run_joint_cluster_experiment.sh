@@ -6,13 +6,13 @@ source "$(dirname "$0")/common.sh"
 SCENE_KEY="${1:?scene key required, e.g. split-cookie or cut-lemon1}"
 QUERY_NAME="${2:?query name required, e.g. complete_cookie or lemon}"
 
-EXPERIMENT_ROOT="${GS_EXPERIMENT_ROOT:-/root/autodl-tmp/gaussianstellar_experiments}"
+EXPERIMENT_ROOT="${GS_EXPERIMENT_ROOT:-/root/autodl-tmp/hypergaussian_experiments}"
 STAMP="${GS_EXPERIMENT_STAMP:-$(date -u +%Y%m%d_%H%M%S)}"
 
 case "${SCENE_KEY}" in
   split-cookie)
-    RUN_DIR="/root/autodl-tmp/GaussianStellar/runs/stellar_worldtube_split-cookie_compare5k/hypernerf/split-cookie"
-    DATASET_DIR="/root/autodl-tmp/GaussianStellar/data/hypernerf/misc/split-cookie"
+    RUN_DIR="/root/autodl-tmp/HyperGaussian/runs/stellar_worldtube_split-cookie_compare5k/hypernerf/split-cookie"
+    DATASET_DIR="/root/autodl-tmp/HyperGaussian/data/hypernerf/misc/split-cookie"
     TRACKS_PATH="${RUN_DIR}/entitybank/query_guided/split-cookie__the_complete_cookie_phaseaware/grounded_sam2/grounded_sam2_query_tracks.json"
     QUERY_ROOT="${RUN_DIR}/entitybank/query_guided/split-cookie__the_complete_cookie_phaseaware"
     case "${QUERY_NAME}" in
@@ -29,8 +29,8 @@ case "${SCENE_KEY}" in
     esac
     ;;
   cut-lemon1)
-    RUN_DIR="/root/autodl-tmp/GaussianStellar/runs/stellar_worldtube_cut-lemon1_quality5k/hypernerf/cut-lemon1"
-    DATASET_DIR="/root/autodl-tmp/GaussianStellar/data/hypernerf/interp/cut-lemon1"
+    RUN_DIR="/root/autodl-tmp/HyperGaussian/runs/stellar_worldtube_cut-lemon1_quality5k/hypernerf/cut-lemon1"
+    DATASET_DIR="/root/autodl-tmp/HyperGaussian/data/hypernerf/interp/cut-lemon1"
     TRACKS_PATH="${RUN_DIR}/entitybank/query_guided/cut_the_lemon_final/grounded_sam2/grounded_sam2_query_tracks.json"
     QUERY_ROOT="${RUN_DIR}/entitybank/query_guided/cut_the_lemon_final"
     case "${QUERY_NAME}" in

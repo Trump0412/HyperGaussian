@@ -16,7 +16,7 @@
 先安装主训练环境：
 
 ```bash
-cd /root/autodl-tmp/GaussianStellar
+cd /root/autodl-tmp/HyperGaussian
 bash scripts/setup_baseline_env.sh cuda121
 ```
 
@@ -38,7 +38,7 @@ conda run -p /root/autodl-tmp/.conda-envs/gs4d-cuda121-py310 \
 - `torch`
 - `diff_gaussian_rasterization`
 - `simple_knn`
-- `gaussian_stellar.temporal`
+- `hypergaussian.temporal`
 - upstream config loader
 
 ## 3. CUDA 与缓存目录约定

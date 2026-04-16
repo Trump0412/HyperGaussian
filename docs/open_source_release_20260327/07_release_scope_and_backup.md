@@ -7,7 +7,7 @@
 - `README.md`
 - `docs/`
 - `configs/`
-- `gaussian_stellar/`
+- `hypergaussian/`
 - `scripts/`
 - `patches/`
 - `external/4DGaussians/`
@@ -33,12 +33,12 @@
 ## 3. 当前建议的公开仓库骨架
 
 ```text
-GaussianStellar/
+HyperGaussian/
 ├── README.md
 ├── docs/
 │   └── open_source_release_20260327/
 ├── configs/
-├── gaussian_stellar/
+├── hypergaussian/
 ├── scripts/
 ├── patches/
 └── external/
@@ -58,16 +58,16 @@ GaussianStellar/
 
 本次建议生成的备份目录路径：
 
-- `/root/autodl-tmp/GaussianStellar_backups/open_source_release_20260327/`
+- `/root/autodl-tmp/HyperGaussian_backups/open_source_release_20260327/`
 
 本次实际归档文件路径：
 
-- `/root/autodl-tmp/GaussianStellar_backups/open_source_release_20260327/gaussianstellar_open_source_core_20260327.tar.gz`
+- `/root/autodl-tmp/HyperGaussian_backups/open_source_release_20260327/hypergaussian_open_source_core_20260327.tar.gz`
 
 本次额外保存的文档快照：
 
-- `/root/autodl-tmp/GaussianStellar_backups/open_source_release_20260327/open_source_release_20260327/`
-- `/root/autodl-tmp/GaussianStellar_backups/open_source_release_20260327/README.md`
+- `/root/autodl-tmp/HyperGaussian_backups/open_source_release_20260327/open_source_release_20260327/`
+- `/root/autodl-tmp/HyperGaussian_backups/open_source_release_20260327/README.md`
 
 建议其中至少包含：
 

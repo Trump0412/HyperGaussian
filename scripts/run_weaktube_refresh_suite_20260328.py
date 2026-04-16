@@ -295,13 +295,13 @@ def public_eval_output(scene_key: str) -> tuple[Path, Path]:
 
 
 def split_cookie_removal_root() -> Path:
-    return Path("/root/autodl-tmp/gaussianstellar_experiments") / (
+    return Path("/root/autodl-tmp/hypergaussian_experiments") / (
         f"{SPLIT_COOKIE['removal_stamp']}_{SPLIT_COOKIE['removal_tag']}"
     )
 
 
 def cut_lemon_removal_root() -> Path:
-    return Path("/root/autodl-tmp/gaussianstellar_experiments") / (
+    return Path("/root/autodl-tmp/hypergaussian_experiments") / (
         f"{CUT_LEMON['removal_stamp']}_{CUT_LEMON['removal_tag']}"
     )
 

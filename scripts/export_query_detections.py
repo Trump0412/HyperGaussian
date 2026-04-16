@@ -9,7 +9,7 @@ for candidate in (PROJECT_ROOT, EXTERNAL_ROOT):
     if candidate_str not in sys.path:
         sys.path.insert(0, candidate_str)
 
-from gaussian_stellar.semantics import detect_query_proposals
+from hypergaussian.semantics import detect_query_proposals
 
 
 def main() -> None:

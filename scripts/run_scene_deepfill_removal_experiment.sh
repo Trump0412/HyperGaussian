@@ -5,7 +5,7 @@ source "$(dirname "$0")/common.sh"
 
 SCENE_KEY="${1:?scene key required: split-cookie, cut-lemon1, americano, or espresso}"
 
-EXPERIMENT_ROOT="${GS_EXPERIMENT_ROOT:-/root/autodl-tmp/gaussianstellar_experiments}"
+EXPERIMENT_ROOT="${GS_EXPERIMENT_ROOT:-/root/autodl-tmp/hypergaussian_experiments}"
 STAMP="${GS_EXPERIMENT_STAMP:-$(date -u +%Y%m%d_%H%M%S)}"
 MAX_POINTS="${DEEPFILL_MAX_POINTS:-40000}"
 FRAME_STRIDE="${DEEPFILL_FRAME_STRIDE:-2}"
@@ -22,7 +22,7 @@ QUERY_TRACKS_PATH=""
 case "${SCENE_KEY}" in
   split-cookie)
     EXPERIMENT_TAG="${DEEPFILL_EXPERIMENT_TAG:-splitcookie_weaktube_ellipsoid_deepfillplus}"
-    SOURCE_RUN_DIR="${DEEPFILL_SOURCE_RUN_DIR:-/root/autodl-tmp/GaussianStellar/runs/stellar_tube_split-cookie_compare5k_weak/hypernerf/split-cookie}"
+    SOURCE_RUN_DIR="${DEEPFILL_SOURCE_RUN_DIR:-/root/autodl-tmp/HyperGaussian/runs/stellar_tube_split-cookie_compare5k_weak/hypernerf/split-cookie}"
     QUERY_ROOT="${DEEPFILL_QUERY_ROOT:-${SOURCE_RUN_DIR}/entitybank/query_guided/split-cookie__the_complete_cookie_phaseaware_weak_tube}"
     SOURCE_PROPOSAL_DIR="${DEEPFILL_SOURCE_PROPOSAL_DIR:-${QUERY_ROOT}/proposal_dir}"
     QUERY_TRACKS_PATH="${DEEPFILL_QUERY_TRACKS_PATH:-${QUERY_ROOT}/grounded_sam2/grounded_sam2_query_tracks.json}"
@@ -81,7 +81,7 @@ case "${SCENE_KEY}" in
     ;;
   cut-lemon1)
     EXPERIMENT_TAG="${DEEPFILL_EXPERIMENT_TAG:-cutlemon_queryguided_ellipsoid_deepfillplus}"
-    SOURCE_RUN_DIR="${DEEPFILL_SOURCE_RUN_DIR:-/root/autodl-tmp/GaussianStellar/runs/stellar_worldtube_cut-lemon1_quality5k/hypernerf/cut-lemon1}"
+    SOURCE_RUN_DIR="${DEEPFILL_SOURCE_RUN_DIR:-/root/autodl-tmp/HyperGaussian/runs/stellar_worldtube_cut-lemon1_quality5k/hypernerf/cut-lemon1}"
     QUERY_ROOT="${DEEPFILL_QUERY_ROOT:-${SOURCE_RUN_DIR}/entitybank/query_guided/cut_the_lemon_final}"
     SOURCE_PROPOSAL_DIR="${DEEPFILL_SOURCE_PROPOSAL_DIR:-${QUERY_ROOT}/query_entitybank}"
     if [[ -z "${DEEPFILL_QUERY_TRACKS_PATH:-}" && -f "${QUERY_ROOT}/grounded_sam2_maskrefresh/grounded_sam2_query_tracks.json" ]]; then
@@ -144,7 +144,7 @@ case "${SCENE_KEY}" in
     ;;
   americano)
     EXPERIMENT_TAG="${DEEPFILL_EXPERIMENT_TAG:-americano_weaktube_glasscup_removal}"
-    SOURCE_RUN_DIR="${DEEPFILL_SOURCE_RUN_DIR:-/root/autodl-tmp/GaussianStellar/runs/stellar_tube_4dlangsplat_refresh_20260328_americano/hypernerf/americano}"
+    SOURCE_RUN_DIR="${DEEPFILL_SOURCE_RUN_DIR:-/root/autodl-tmp/HyperGaussian/runs/stellar_tube_4dlangsplat_refresh_20260328_americano/hypernerf/americano}"
     QUERY_ROOT="${DEEPFILL_QUERY_ROOT:-${SOURCE_RUN_DIR}/entitybank/query_guided/americano__the_glass_cup}"
     SOURCE_PROPOSAL_DIR="${DEEPFILL_SOURCE_PROPOSAL_DIR:-${QUERY_ROOT}/query_entitybank}"
     QUERY_TRACKS_PATH="${DEEPFILL_QUERY_TRACKS_PATH:-${QUERY_ROOT}/grounded_sam2/grounded_sam2_query_tracks.json}"
@@ -203,7 +203,7 @@ case "${SCENE_KEY}" in
     ;;
   espresso)
     EXPERIMENT_TAG="${DEEPFILL_EXPERIMENT_TAG:-espresso_weaktube_glasscup_removal}"
-    SOURCE_RUN_DIR="${DEEPFILL_SOURCE_RUN_DIR:-/root/autodl-tmp/GaussianStellar/runs/stellar_tube_4dlangsplat_refresh_20260328_espresso/hypernerf/espresso}"
+    SOURCE_RUN_DIR="${DEEPFILL_SOURCE_RUN_DIR:-/root/autodl-tmp/HyperGaussian/runs/stellar_tube_4dlangsplat_refresh_20260328_espresso/hypernerf/espresso}"
     QUERY_ROOT="${DEEPFILL_QUERY_ROOT:-${SOURCE_RUN_DIR}/entitybank/query_guided/espresso__the_glass_cup}"
     SOURCE_PROPOSAL_DIR="${DEEPFILL_SOURCE_PROPOSAL_DIR:-${QUERY_ROOT}/query_entitybank}"
     QUERY_TRACKS_PATH="${DEEPFILL_QUERY_TRACKS_PATH:-${QUERY_ROOT}/grounded_sam2/grounded_sam2_query_tracks.json}"

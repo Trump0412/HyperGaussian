@@ -9,7 +9,7 @@ for candidate in (REPO_ROOT, EXTERNAL_ROOT):
     if candidate_str not in sys.path:
         sys.path.insert(0, candidate_str)
 
-from gaussian_stellar.entitybank import export_entitybank
+from hypergaussian.entitybank import export_entitybank
 
 
 def main() -> None:

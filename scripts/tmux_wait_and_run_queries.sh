@@ -10,7 +10,7 @@ if [[ -z "${GPU_ID}" || -z "${BATCH_NAME}" ]]; then
   exit 1
 fi
 
-ROOT="/root/autodl-tmp/GaussianStellar"
+ROOT="/root/autodl-tmp/HyperGaussian"
 LOG_DIR="${ROOT}/reports/ours_benchmark_eval/run_logs"
 mkdir -p "${LOG_DIR}"
 TS="$(date +%Y%m%d_%H%M%S)"

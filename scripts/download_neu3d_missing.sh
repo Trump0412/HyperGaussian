@@ -9,8 +9,8 @@
 
 set -uo pipefail
 
-DYNERF_ROOT="/root/autodl-tmp/GaussianStellar/data/dynerf"
-REPORT_DIR="/root/autodl-tmp/GaussianStellar/reports/ours_benchmark_eval"
+DYNERF_ROOT="/root/autodl-tmp/HyperGaussian/data/dynerf"
+REPORT_DIR="/root/autodl-tmp/HyperGaussian/reports/ours_benchmark_eval"
 LOG="${REPORT_DIR}/download_neu3d.log"
 mkdir -p "${DYNERF_ROOT}" "${REPORT_DIR}"
 

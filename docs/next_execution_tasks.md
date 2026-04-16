@@ -1,4 +1,4 @@
-# GaussianStellar Next Execution Tasks
+# HyperGaussian Next Execution Tasks
 
 ## Geometry Line
 
@@ -10,7 +10,7 @@
 ## Semantics Line
 
 1. Keep `TRASE` as the external semantic teacher / bridge baseline.
-2. Continue improving native `GaussianStellar` semantic assignment and query scoring on top of `worldtube`.
+2. Continue improving native `HyperGaussian` semantic assignment and query scoring on top of `worldtube`.
 3. Focus next query task on contact-heavy actions such as `cut the lemon`.
 4. Promote `entitybank -> semantic_priors -> native_queries` into the default evaluation path for `worldtube`.
 

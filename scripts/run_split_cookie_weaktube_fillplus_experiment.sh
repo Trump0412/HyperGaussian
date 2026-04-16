@@ -3,14 +3,14 @@ set -euo pipefail
 
 source "$(dirname "$0")/common.sh"
 
-EXPERIMENT_ROOT="${GS_EXPERIMENT_ROOT:-/root/autodl-tmp/gaussianstellar_experiments}"
+EXPERIMENT_ROOT="${GS_EXPERIMENT_ROOT:-/root/autodl-tmp/hypergaussian_experiments}"
 STAMP="${GS_EXPERIMENT_STAMP:-$(date -u +%Y%m%d_%H%M%S)}"
 EXPERIMENT_TAG="${WEAKTUBE_EXPERIMENT_TAG:-splitcookie_weaktube_ellipsoid_fillplus}"
 OUT_ROOT="${EXPERIMENT_ROOT}/${STAMP}_${EXPERIMENT_TAG}"
 PROPOSAL_DIR="${OUT_ROOT}/proposal_dir"
 REMOVAL_DIR="${OUT_ROOT}/removal_bundle"
 
-SOURCE_RUN_DIR="${WEAKTUBE_SOURCE_RUN_DIR:-/root/autodl-tmp/GaussianStellar/runs/stellar_tube_split-cookie_compare5k_weak/hypernerf/split-cookie}"
+SOURCE_RUN_DIR="${WEAKTUBE_SOURCE_RUN_DIR:-/root/autodl-tmp/HyperGaussian/runs/stellar_tube_split-cookie_compare5k_weak/hypernerf/split-cookie}"
 QUERY_ROOT="${WEAKTUBE_QUERY_ROOT:-${SOURCE_RUN_DIR}/entitybank/query_guided/split-cookie__the_complete_cookie_phaseaware_weak_tube}"
 SOURCE_PROPOSAL_DIR="${WEAKTUBE_SOURCE_PROPOSAL_DIR:-${QUERY_ROOT}/proposal_dir}"
 PROPOSAL_ALIAS="${WEAKTUBE_PROPOSAL_ALIAS:-cookie__pre_split}"

@@ -13,7 +13,7 @@ from pathlib import Path
 
 BENCHMARK_JSON = Path("/root/autodl-tmp/data/Ours_benchmark.json")
 GR4D_BENCH_ROOT = Path("/root/autodl-tmp/GR4D-Bench/data/scenes")
-REPORT_DIR = Path("/root/autodl-tmp/GaussianStellar/reports/ours_benchmark_eval")
+REPORT_DIR = Path("/root/autodl-tmp/HyperGaussian/reports/ours_benchmark_eval")
 REPORT_DIR.mkdir(parents=True, exist_ok=True)
 
 OUTPUT_JSON = REPORT_DIR / "benchmark_full_queries.json"

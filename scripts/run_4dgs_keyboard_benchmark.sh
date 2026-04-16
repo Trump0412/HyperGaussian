@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-GS_ROOT="/root/autodl-tmp/GaussianStellar"
+GS_ROOT="/root/autodl-tmp/HyperGaussian"
 PY="/root/autodl-tmp/.conda-envs/gs4d-cuda121-py310/bin/python"
 RUN_DIR="${GS_ROOT}/runs/baseline_4dgs_keyboard_benchmark_20260408"
 SOURCE_PATH="${GS_ROOT}/data/hypernerf/misc/keyboard"

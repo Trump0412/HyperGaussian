@@ -28,9 +28,9 @@
 
 ### 1.3 temporal 与 primitive
 
-- `gaussian_stellar/temporal/modules.py`
+- `hypergaussian/temporal/modules.py`
   - `identity / mlp / density / stellar` warp 定义。
-- `gaussian_stellar/temporal/warp_io.py`
+- `hypergaussian/temporal/warp_io.py`
   - warp 的构建、保存、加载。
 - `external/4DGaussians/scene/gaussian_model.py`
   - per-Gaussian temporal state、tube/worldtube support、support-aware optimization。
@@ -47,9 +47,9 @@
 
 - `scripts/export_entitybank.py`
   - entitybank 导出 CLI。
-- `gaussian_stellar/entitybank/tube_bank.py`
+- `hypergaussian/entitybank/tube_bank.py`
   - 从 checkpoint 读取 temporal 参数并采样 trajectory/tube stats。
-- `gaussian_stellar/entitybank/export.py`
+- `hypergaussian/entitybank/export.py`
   - support-aware clustering、entity 导出。
 
 ### 1.5 语义主线
@@ -58,11 +58,11 @@
 - `scripts/export_semantic_tracks.py`
 - `scripts/export_semantic_priors.py`
 - `scripts/export_native_semantics.py`
-- `gaussian_stellar/semantics/slots.py`
-- `gaussian_stellar/semantics/tracks.py`
-- `gaussian_stellar/semantics/priors.py`
-- `gaussian_stellar/semantics/native_assignment.py`
-- `gaussian_stellar/semantics/trase_bridge.py`
+- `hypergaussian/semantics/slots.py`
+- `hypergaussian/semantics/tracks.py`
+- `hypergaussian/semantics/priors.py`
+- `hypergaussian/semantics/native_assignment.py`
+- `hypergaussian/semantics/trase_bridge.py`
 
 ### 1.6 Query grounding 主线
 
@@ -72,15 +72,15 @@
   - Qwen query planner。
 - `scripts/run_grounded_sam2_query.py`
   - GSAM2 tracking 入口。
-- `gaussian_stellar/semantics/qwen_query_planner.py`
+- `hypergaussian/semantics/qwen_query_planner.py`
   - query 解析与 temporal hints。
-- `gaussian_stellar/semantics/grounded_sam2_backend.py`
+- `hypergaussian/semantics/grounded_sam2_backend.py`
   - multi-anchor detection/tracking。
-- `gaussian_stellar/semantics/query_proposal_bridge.py`
+- `hypergaussian/semantics/query_proposal_bridge.py`
   - 2D tracks 到 learned worldtube 的重分配。
-- `gaussian_stellar/semantics/qwen_assignment.py`
+- `hypergaussian/semantics/qwen_assignment.py`
   - Qwen entity assignment。
-- `gaussian_stellar/semantics/query_render.py`
+- `hypergaussian/semantics/query_render.py`
   - final query render 与 validation 输出。
 
 ### 1.7 应用与编辑
@@ -98,9 +98,9 @@
 
 ### A. 核心代码
 
-- `gaussian_stellar/temporal/`
-- `gaussian_stellar/entitybank/`
-- `gaussian_stellar/semantics/`
+- `hypergaussian/temporal/`
+- `hypergaussian/entitybank/`
+- `hypergaussian/semantics/`
 - `external/4DGaussians/scene/gaussian_model.py`
 - `external/4DGaussians/gaussian_renderer/__init__.py`
 - `external/4DGaussians/train.py`
@@ -148,7 +148,7 @@
 - `README.md`
 - `docs/`
 - `configs/`
-- `gaussian_stellar/`
+- `hypergaussian/`
 - `scripts/`
 - `patches/`
 - `external/4DGaussians/`
@@ -170,7 +170,7 @@
 如果后面有人问“关键代码在哪”，最短回答就是：
 
 - 训练改动看 `external/4DGaussians`
-- 时间模块看 `gaussian_stellar/temporal`
-- 时空实体导出看 `gaussian_stellar/entitybank`
-- 语义/query/app 看 `gaussian_stellar/semantics` 和 `scripts/run_query_specific_worldtube_pipeline.sh`
+- 时间模块看 `hypergaussian/temporal`
+- 时空实体导出看 `hypergaussian/entitybank`
+- 语义/query/app 看 `hypergaussian/semantics` 和 `scripts/run_query_specific_worldtube_pipeline.sh`
 

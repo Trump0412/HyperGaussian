@@ -1,8 +1,8 @@
-# GaussianStellar 项目总览
+# HyperGaussian 项目总览
 
 ## 1. 项目定位
 
-GaussianStellar 是一个围绕动态 4D Gaussian 表示搭建的统一研究仓库。它不是三个松散拼接的小项目，而是一条连续主线：
+HyperGaussian 是一个围绕动态 4D Gaussian 表示搭建的统一研究仓库。它不是三个松散拼接的小项目，而是一条连续主线：
 
 `动态重建 -> 时空 primitive -> entity bank -> training-free 语义 grounding -> query-conditioned 渲染/编辑`
 
@@ -61,7 +61,7 @@ GaussianStellar 是一个围绕动态 4D Gaussian 表示搭建的统一研究仓
 
 | 问题 | 结论 | 说明 |
 | --- | --- | --- |
-| 是不是同一个仓库基座 | 是 | 都在 `GaussianStellar` 内部完成 |
+| 是不是同一个仓库基座 | 是 | 都在 `HyperGaussian` 内部完成 |
 | 是不是同一个训练/渲染主入口 | 是 | 重建统一从 `external/4DGaussians/train.py` 和 `render.py` 进入 |
 | 是不是共享同一套中间产物协议 | 是，但主要针对 temporal 分支 | 语义和应用默认依赖 `config.yaml`、`point_cloud/iteration_*`、`temporal_params.pth`、`entitybank/` |
 | 是不是所有结果都来自完全相同的模型分支 | 不一定 | 当前不同任务可能分别基于 `stellar_tube` 或 `stellar_worldtube` 的 run |
@@ -97,9 +97,9 @@ GaussianStellar 是一个围绕动态 4D Gaussian 表示搭建的统一研究仓
 | 组件 | 角色 | 是否核心 |
 | --- | --- | --- |
 | `external/4DGaussians` | 训练、渲染、数据协议、基础 Gaussian 模型 | 核心 |
-| `gaussian_stellar/temporal` | 时间 warp 与时间状态辅助模块 | 核心 |
-| `gaussian_stellar/entitybank` | 时空实体导出与聚类 | 核心 |
-| `gaussian_stellar/semantics` | 语义导出、query planning、query grounding、rendering | 核心 |
+| `hypergaussian/temporal` | 时间 warp 与时间状态辅助模块 | 核心 |
+| `hypergaussian/entitybank` | 时空实体导出与聚类 | 核心 |
+| `hypergaussian/semantics` | 语义导出、query planning、query grounding、rendering | 核心 |
 | `external/Grounded-SAM-2` | 2D query detection/tracking backend | 语义阶段重要外部件 |
 | `Qwen` | query planning 与 entity semantic assignment | 语义阶段重要外部件 |
 | `external/Depth-Anything-3` | 可选 bootstrap | 非核心 |
@@ -109,6 +109,6 @@ GaussianStellar 是一个围绕动态 4D Gaussian 表示搭建的统一研究仓
 
 建议后续对外统一这么讲：
 
-- GaussianStellar/HyperGaussian 的核心不是“给 4DGS 加一个语义头”，而是把 dynamic Gaussian 改造成具有显式 temporal support 的 generalized spacetime primitive。
+- HyperGaussian/HyperGaussian 的核心不是“给 4DGS 加一个语义头”，而是把 dynamic Gaussian 改造成具有显式 temporal support 的 generalized spacetime primitive。
 - 语义阶段不重新训练底层 scene representation，而是基于 `entitybank` 做 training-free grounding。
 - 应用侧能力也是消费同一个 `entitybank` 和 query-specific reassignment，而不是另起一个编辑系统。

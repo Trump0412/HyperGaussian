@@ -443,7 +443,7 @@ def score_native_query(
             "query": query,
             "dynamic_query": bool(query_slots.get("dynamic_query")),
             "query_slots": query_slots,
-            "embedding_model": "gaussianstellar-qwen-heuristic" if semantic_source == "qwen" else "gaussianstellar-native-heuristic",
+            "embedding_model": "hypergaussian-qwen-heuristic" if semantic_source == "qwen" else "hypergaussian-native-heuristic",
             "top_k": int(top_k),
             "exclude_entity_types": ["background_stuff"],
         },
@@ -458,12 +458,12 @@ def score_native_query(
         "reason": "" if selected_items else "no native semantic match",
         "query_slots": query_slots,
         "source_query_dir": None,
-        "semantic_source": "gaussianstellar_qwen" if semantic_source == "qwen" else "gaussianstellar_native",
+        "semantic_source": "hypergaussian_qwen" if semantic_source == "qwen" else "hypergaussian_native",
     }
     query_payload = {
         "query": query,
         "query_slots": query_slots,
-        "native_semantic_source": "gaussianstellar_qwen" if semantic_source == "qwen" else "gaussianstellar_native",
+        "native_semantic_source": "hypergaussian_qwen" if semantic_source == "qwen" else "hypergaussian_native",
         "num_assignments": int(assignments_payload.get("num_assignments", 0)),
         "semantic_source": semantic_source,
     }
