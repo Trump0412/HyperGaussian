@@ -27,7 +27,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 # 路径配置
 # ============================================================
 REPO_ROOT = Path(__file__).resolve().parents[1]
-BENCHMARK_JSON = Path("/root/autodl-tmp/data/Ours_benchmark.json")
+BENCHMARK_JSON = Path(os.environ.get("OURS_BENCHMARK_JSON", str(REPO_ROOT / "data" / "benchmarks" / "r4d_bench_qa" / "benchmark.json")))
 REPORT_DIR = REPO_ROOT / "reports" / "ours_benchmark_eval"
 REPORT_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -239,7 +239,7 @@ def run_cmd(cmd: list[str], env: dict | None = None, cwd: Path | None = None,
 
 def gs_python(args: list[str], env: dict | None = None) -> None:
     """使用主conda环境运行python脚本。"""
-    gs_env = "/root/autodl-tmp/.conda-envs/gs4d-cuda121-py310"
+    gs_env = os.environ.get("GS4D_ENV_PATH", str(REPO_ROOT / ".cache" / "hypergaussian" / "conda-envs" / "gs4d-cuda121-py310"))
     cmd = [
         "conda", "run", "--no-capture-output", "-p", gs_env,
         "python", *args,
@@ -401,7 +401,7 @@ def download_neu3d_scene(scene_key: str) -> bool:
 # 检查是否有预处理好的数据在 GR4D-Bench 或其他位置
 
 DATA_DIR="{data_dir}"
-GR4DBench_DIR="/root/autodl-tmp/GR4D-Bench/data/scenes/{scene_name}"
+GR4DBench_DIR="{REPO_ROOT / 'data' / 'GR4D-Bench' / 'data' / 'scenes' / scene_name}"
 
 # 检查GR4D-Bench
 if [[ -d "$GR4DBench_DIR/images" ]]; then

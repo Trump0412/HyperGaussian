@@ -7,6 +7,8 @@ os.environ.setdefault("OMP_NUM_THREADS", "1")
 
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 UPSTREAM_ROOT = os.path.join(REPO_ROOT, "external", "4DGaussians")
+if not os.path.isdir(UPSTREAM_ROOT):
+    raise SystemExit("Missing external/4DGaussians. Run: bash scripts/bootstrap_external.sh")
 sys.path.insert(0, REPO_ROOT)
 sys.path.insert(0, UPSTREAM_ROOT)
 

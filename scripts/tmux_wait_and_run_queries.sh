@@ -9,8 +9,9 @@ if [[ -z "${GPU_ID}" || -z "${BATCH_NAME}" ]]; then
   echo "batch_name: gpu0 | gpu1"
   exit 1
 fi
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/common.sh"
 
-ROOT="/root/autodl-tmp/HyperGaussian"
+ROOT="${GS_ROOT}"
 LOG_DIR="${ROOT}/reports/ours_benchmark_eval/run_logs"
 mkdir -p "${LOG_DIR}"
 TS="$(date +%Y%m%d_%H%M%S)"

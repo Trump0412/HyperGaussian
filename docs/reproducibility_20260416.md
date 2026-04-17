@@ -3,22 +3,22 @@
 ## Environment
 
 - Host: `myautodl`
-- Project root: `/root/autodl-tmp/HyperGaussian`
-- Main env: `/root/autodl-tmp/.conda-envs/gs4d-cuda121-py310`
+- Project root: `<AUTODL_ROOT>/HyperGaussian`
+- Main env: `<AUTODL_ROOT>/.conda-envs/gs4d-cuda121-py310`
 - Reproduction artifacts: `reports/reproducibility_20260416`
 
 ## A) Keyboard Reconstruction Target (PSNR 28.4051)
 
 Evaluated run:
 
-`/root/autodl-tmp/HyperGaussian/runs/stellar_tube_bench12_best04034_lrlow_20260402_keyboard/hypernerf/keyboard`
+`<AUTODL_ROOT>/HyperGaussian/runs/stellar_tube_bench12_best04034_lrlow_20260402_keyboard/hypernerf/keyboard`
 
 Command:
 
 ```bash
-conda run -p /root/autodl-tmp/.conda-envs/gs4d-cuda121-py310 \
+conda run -p <AUTODL_ROOT>/.conda-envs/gs4d-cuda121-py310 \
   python scripts/collect_metrics.py \
-  --run-dir /root/autodl-tmp/HyperGaussian/runs/stellar_tube_bench12_best04034_lrlow_20260402_keyboard/hypernerf/keyboard \
+  --run-dir <AUTODL_ROOT>/HyperGaussian/runs/stellar_tube_bench12_best04034_lrlow_20260402_keyboard/hypernerf/keyboard \
   --write-summary
 ```
 
@@ -45,9 +45,9 @@ Artifacts:
 ### Re-run with current evaluation entrypoint
 
 ```bash
-conda run -p /root/autodl-tmp/.conda-envs/gs4d-cuda121-py310 \
+conda run -p <AUTODL_ROOT>/.conda-envs/gs4d-cuda121-py310 \
   python scripts/evaluate_ours_benchmark.py \
-  --benchmark /root/autodl-tmp/data/Ours_benchmark.json \
+  --benchmark <AUTODL_ROOT>/data/Ours_benchmark.json \
   --query-root-map reports/reproducibility_20260416/query_root_map_from_results_latest.json \
   --dataset-dir-map reports/reproducibility_20260416/dataset_dir_map_from_results_latest.json \
   --output-json reports/reproducibility_20260416/ours_benchmark_eval_reproduced_from_latest.json \
@@ -67,12 +67,12 @@ Note: differences are due to protocol/mapping coverage and evaluation-scope diff
 ## C) 4DLangSplat (Americano)
 
 ```bash
-conda run -p /root/autodl-tmp/.conda-envs/gs4d-cuda121-py310 \
+conda run -p <AUTODL_ROOT>/.conda-envs/gs4d-cuda121-py310 \
   python scripts/evaluate_public_query_protocol.py \
-  --protocol-json /root/autodl-tmp/HyperGaussian/reports/4dlangsplat_compare/protocol_splits/americano.json \
-  --annotation-dir /root/autodl-tmp/HyperGaussian/data/benchmarks/4dlangsplat/HyperNeRF-Annotation/americano \
-  --dataset-dir /root/autodl-tmp/HyperGaussian/data/hypernerf/misc/americano \
-  --query-root /root/autodl-tmp/HyperGaussian/runs/stellar_tube_4dlangsplat_refresh_20260328_americano/hypernerf/americano/entitybank/query_guided \
+  --protocol-json <AUTODL_ROOT>/HyperGaussian/reports/4dlangsplat_compare/protocol_splits/americano.json \
+  --annotation-dir <AUTODL_ROOT>/HyperGaussian/data/benchmarks/4dlangsplat/HyperNeRF-Annotation/americano \
+  --dataset-dir <AUTODL_ROOT>/HyperGaussian/data/hypernerf/misc/americano \
+  --query-root <AUTODL_ROOT>/HyperGaussian/runs/stellar_tube_4dlangsplat_refresh_20260328_americano/hypernerf/americano/entitybank/query_guided \
   --output-json reports/reproducibility_20260416/4dlangsplat_americano_public_eval_reproduced.json \
   --output-md reports/reproducibility_20260416/4dlangsplat_americano_public_eval_reproduced.md
 ```

@@ -2,14 +2,13 @@
 # GPU5 全链路：weaktube比较训练 → entitybank准备 → 21条query pipeline
 set -uo pipefail
 export CUDA_VISIBLE_DEVICES=5
-GS_ROOT=/root/autodl-tmp/HyperGaussian
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/common.sh"
 BASE_14K=$GS_ROOT/runs/baseline_4dgs_20260330
 LOG=$GS_ROOT/logs/gpu5_chain.log
 mkdir -p $GS_ROOT/logs
 log() { echo "[$(date '+%H:%M:%S')] $*" | tee -a $LOG; }
 
 cd $GS_ROOT
-source scripts/common.sh
 
 # ─── Phase 1a: 4DGS 3k baseline on split-cookie (comparsion baseline) ─────
 log "=== P1a: 4DGS 3k split-cookie ==="

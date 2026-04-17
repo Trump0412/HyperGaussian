@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 # cleanup_old_runs.sh
 # 清理不再需要的旧runs目录，释放磁盘空间供Neu3D场景下载使用
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/common.sh"
+
 # 只删除明确不需要的ablation/comparison/非benchmark场景runs
 set -uo pipefail
 
-RUNS_DIR="/root/autodl-tmp/HyperGaussian/runs"
-LOG="/root/autodl-tmp/HyperGaussian/reports/ours_benchmark_eval/cleanup.log"
+RUNS_DIR="${GS_ROOT}/runs"
+LOG="${GS_ROOT}/reports/ours_benchmark_eval/cleanup.log"
 mkdir -p "$(dirname "$LOG")"
 
 log_msg() { echo "[$(date '+%H:%M:%S')] $*" | tee -a "$LOG"; }
@@ -23,7 +25,7 @@ safe_rm() {
 }
 
 log_msg "=== 开始清理旧runs ==="
-log_msg "当前磁盘: $(df -h /root/autodl-tmp | tail -1 | awk '{print $4, "available"}')"
+log_msg "当前磁盘: $(df -h "${GS_ROOT}" | tail -1 | awk '{print $4, "available"}')"
 
 # ===== 1. ablation/比较用的 span/sigma 变体 (只保留最优 span040_sigma032) =====
 safe_rm "stellar_tube_full6_20260328_histplus_span045"              "span045非最优"
@@ -161,7 +163,7 @@ safe_rm "baseline_4dgs_da3_smoke"              "早期baseline"
 log_msg ""
 log_msg "=== 清理完成 ==="
 log_msg "总计释放约 ${TOTAL_FREED} MB (≈ $((TOTAL_FREED / 1024)) GB)"
-log_msg "当前磁盘: $(df -h /root/autodl-tmp | tail -1 | awk '{print $4, "available"}')"
+log_msg "当前磁盘: $(df -h "${GS_ROOT}" | tail -1 | awk '{print $4, "available"}')"
 log_msg ""
 log_msg "保留的benchmark必要runs:"
-ls /root/autodl-tmp/HyperGaussian/runs/ | tee -a "$LOG"
+ls ${GS_ROOT}/runs/ | tee -a "$LOG"

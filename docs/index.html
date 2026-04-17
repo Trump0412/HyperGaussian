@@ -100,7 +100,7 @@
     .results-table td, .results-table th { padding: 0.75rem 1rem; border: 1px solid #e0e0e0; text-align: center; }
     .results-table th:first-child, .results-table td:first-child { text-align: left; }
     .results-table tr:hover td { background-color: #f8f9fa; }
-    .results-table .ours td { font-weight: 700; background-color: #f0eeff; }
+    .results-table strong { font-weight: 700; }
 
     .bibtex-block {
       background: #2d3436;
@@ -165,23 +165,23 @@
             HyperGaussian: Referring 4D Gaussian Splatting
           </h1>
           <div class="is-size-5 publication-authors" style="margin-bottom:1rem;">
-            <span class="author-block"><a href="#">Anonymous Authors</a></span>
+            <span class="author-block">HyperGaussian Authors</span>
           </div>
           <div class="is-size-6" style="color:#c8d6e5; margin-bottom:1.5rem;">
-            <span>Anonymous Institution</span>
+            <span>Open Source Release</span>
           </div>
           <div class="publication-links">
-            <a href="https://arxiv.org/abs/2026.00000" target="_blank" class="button is-dark is-rounded">
+            <a href="#citation" class="button is-dark is-rounded">
               <span class="icon"><i class="fas fa-file-pdf"></i></span>
-              <span>Paper</span>
+              <span>Paper (TBA)</span>
             </a>
-            <a href="https://github.com/Trump0412/HyperGaussian" target="_blank" class="button is-dark is-rounded">
+            <a href="https://github.com/Trump0412/HyperGaussian" target="_blank" rel="noopener noreferrer" class="button is-dark is-rounded">
               <span class="icon"><i class="fab fa-github"></i></span>
               <span>Code</span>
             </a>
-            <a href="https://huggingface.co/datasets/Trump0412/HyperGaussian-R4D-Bench-QA" target="_blank" class="button is-dark is-rounded">
+            <a href="https://huggingface.co/datasets/Trump0412/HyperGaussian-R4D-Bench-QA" target="_blank" rel="noopener noreferrer" class="button is-dark is-rounded">
               <span class="icon">🤗</span>
-              <span>Dataset</span>
+              <span>Dataset (Gated)</span>
             </a>
           </div>
         </div>
@@ -350,15 +350,15 @@
             <tbody>
               <tr>
                 <td>Segment then Splat</td>
-                <td>55.6</td><td>28.4</td><td>20.3208</td><td>0.7027</td><td>0.3971</td>
+                <td>55.6</td><td>28.4</td><td>20.3208</td><td>0.7027</td><td><strong>0.3971</strong></td>
               </tr>
               <tr>
                 <td>4D LangSplat</td>
-                <td>58.4</td><td>32.1</td><td>20.3208</td><td>0.7027</td><td>0.3971</td>
+                <td>58.4</td><td>32.1</td><td>20.3208</td><td>0.7027</td><td><strong>0.3971</strong></td>
               </tr>
-              <tr class="ours">
+              <tr>
                 <td>HyperGaussian (Ours)</td>
-                <td>76.5</td><td>34.4</td><td>20.4159</td><td>0.7069</td><td>0.4082</td>
+                <td><strong>76.5</strong></td><td><strong>34.4</strong></td><td><strong>20.4159</strong></td><td><strong>0.7069</strong></td><td>0.4082</td>
               </tr>
             </tbody>
           </table>
@@ -381,8 +381,8 @@
               <tr><td>Deformable CLIP</td><td>65.01</td><td>45.37</td></tr>
               <tr><td>Non-Status Field</td><td>84.58</td><td>62.00</td></tr>
               <tr><td>4D LangSplat</td><td>88.86</td><td>66.14</td></tr>
-              <tr class="ours">
-                <td>HyperGaussian (Ours)</td><td>91.62</td><td>66.48</td>
+              <tr>
+                <td>HyperGaussian (Ours)</td><td><strong>91.62</strong></td><td><strong>66.48</strong></td>
               </tr>
             </tbody>
           </table>
@@ -405,8 +405,8 @@
               <tr><td>w/o Stage 1 static segmentation</td><td>48.6</td><td>17.2</td></tr>
               <tr><td>w/o Stage 2 semantic assignment</td><td>62.9</td><td>29.8</td></tr>
               <tr><td>w/o Stage 3 spatio-temporal reasoning</td><td>36.0</td><td>26.1</td></tr>
-              <tr class="ours">
-                <td>HyperGaussian (full)</td><td>76.5</td><td>34.4</td>
+              <tr>
+                <td>HyperGaussian (full)</td><td><strong>76.5</strong></td><td><strong>34.4</strong></td>
               </tr>
             </tbody>
           </table>
@@ -459,7 +459,7 @@
       <div class="column is-four-fifths">
         <pre class="bibtex-block">@inproceedings{hypergaussian2026,
   title     = {HyperGaussian: Referring 4D Gaussian Splatting},
-  author    = {Anonymous},
+  author    = {HyperGaussian Authors},
   booktitle = {Proceedings of the 34th ACM International Conference on Multimedia},
   year      = {2026}
 }</pre>
@@ -476,12 +476,12 @@
       <div class="column is-four-fifths has-text-centered">
         <p style="color:#636e72; font-size:0.95rem; line-height:1.8;">
           This project builds on
-          <a href="https://github.com/hustvl/4DGaussians" target="_blank">4DGaussians</a>,
-          <a href="https://github.com/IDEA-Research/Grounded-SAM-2" target="_blank">Grounded-SAM2</a>,
-          and <a href="https://github.com/QwenLM/Qwen" target="_blank">Qwen</a>.
+          <a href="https://github.com/hustvl/4DGaussians" target="_blank" rel="noopener noreferrer">4DGaussians</a>,
+          <a href="https://github.com/IDEA-Research/Grounded-SAM-2" target="_blank" rel="noopener noreferrer">Grounded-SAM2</a>,
+          and <a href="https://github.com/QwenLM/Qwen" target="_blank" rel="noopener noreferrer">Qwen</a>.
           The project page template is adapted from
-          <a href="https://li-hao-yuan.github.io/GeoThinker/" target="_blank">GeoThinker</a>
-          and <a href="https://nerfies.github.io/" target="_blank">Nerfies</a>.
+          <a href="https://li-hao-yuan.github.io/GeoThinker/" target="_blank" rel="noopener noreferrer">GeoThinker</a>
+          and <a href="https://nerfies.github.io/" target="_blank" rel="noopener noreferrer">Nerfies</a>.
         </p>
       </div>
     </div>

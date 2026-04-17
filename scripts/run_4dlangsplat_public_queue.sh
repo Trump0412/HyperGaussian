@@ -5,6 +5,7 @@ source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/common.sh"
 
 PROTOCOL_JSON="${1:-${GS_ROOT}/reports/4dlangsplat_compare/public_query_protocol.json}"
 RUN_SUFFIX="${2:-compare5k}"
+RAW_ROOT="${HYPERNERF_RAW_ROOT:-${GS_ROOT}/data/raw/HyperNeRF}"
 
 if [[ ! -f "${PROTOCOL_JSON}" ]]; then
   echo "Missing protocol json: ${PROTOCOL_JSON}" >&2
@@ -14,8 +15,10 @@ fi
 unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY all_proxy ALL_PROXY ftp_proxy FTP_PROXY
 export HF_ENDPOINT="${HF_ENDPOINT:-https://hf-mirror.com}"
 
-python - <<'PY' "${PROTOCOL_JSON}" | while IFS=$'\t' read -r group scene source_root; do
+GS_ROOT_ENV="${GS_ROOT}" RAW_ROOT_ENV="${RAW_ROOT}" \
+  gs_python - <<'PY' "${PROTOCOL_JSON}" | while IFS=$'\t' read -r group scene source_root; do
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -23,16 +26,18 @@ protocol_path = Path(sys.argv[1])
 payload = json.loads(protocol_path.read_text())
 seen = set()
 
+gs_root = Path(os.environ["GS_ROOT_ENV"])
+raw_root = Path(os.environ["RAW_ROOT_ENV"])
 source_candidates = {
     "misc": [
-        Path("/root/autodl-tmp/data/HyperNeRF/misc"),
-        Path("/root/autodl-tmp/data/HyperNeRF"),
-        Path("/root/autodl-tmp/HyperGaussian/data/hypernerf/misc"),
+        raw_root / "misc",
+        raw_root,
+        gs_root / "data" / "hypernerf" / "misc",
     ],
     "interp": [
-        Path("/root/autodl-tmp/data/HyperNeRF/interp"),
-        Path("/root/autodl-tmp/data/HyperNeRF"),
-        Path("/root/autodl-tmp/HyperGaussian/data/hypernerf/interp"),
+        raw_root / "interp",
+        raw_root,
+        gs_root / "data" / "hypernerf" / "interp",
     ],
 }
 

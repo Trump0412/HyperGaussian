@@ -4,7 +4,7 @@ set -euo pipefail
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/common.sh"
 
 BENCHMARK_ROOT="${1:-${GS_ROOT}/data/benchmarks/gr4d_curated_v1}"
-RESULT_ROOT="${2:-/root/autodl-tmp/hypergaussian_semantic_audit_$(date +%Y%m%d_%H%M%S)}"
+RESULT_ROOT="${2:-${GS_EXPERIMENT_ROOT:-${GS_ROOT}/experiments}/hypergaussian_semantic_audit_$(date +%Y%m%d_%H%M%S)}"
 EXTRA_QUERY_PACK="${3:-${GS_ROOT}/configs/benchmarks/gr4d_semantic_stress_queries.json}"
 
 mkdir -p "${RESULT_ROOT}/queries" "${RESULT_ROOT}/logs" "${RESULT_ROOT}/reports"
@@ -101,11 +101,11 @@ import sys
 from pathlib import Path
 
 payload = {
-    "americano": "/root/autodl-tmp/HyperGaussian/runs/stellar_worldtube_americano_compare5k/hypernerf/americano",
-    "cut-lemon1": "/root/autodl-tmp/HyperGaussian/runs/stellar_worldtube_cut_lemon1_smoke300_v6a/hypernerf/cut-lemon1",
-    "split-cookie": "/root/autodl-tmp/HyperGaussian/runs/stellar_tube_split-cookie_smoke300_tubecmp/hypernerf/split-cookie",
-    "coffee_martini": "/root/autodl-tmp/HyperGaussian/runs/stellar_tube_coffee_martini_smoke300_tubecmp/dynerf/coffee_martini",
-    "flame_steak": "/root/autodl-tmp/HyperGaussian/runs/stellar_tube_flame_steak_smoke300_tubecmp/dynerf/flame_steak",
+    "americano": "${GS_ROOT}/runs/stellar_worldtube_americano_compare5k/hypernerf/americano",
+    "cut-lemon1": "${GS_ROOT}/runs/stellar_worldtube_cut_lemon1_smoke300_v6a/hypernerf/cut-lemon1",
+    "split-cookie": "${GS_ROOT}/runs/stellar_tube_split-cookie_smoke300_tubecmp/hypernerf/split-cookie",
+    "coffee_martini": "${GS_ROOT}/runs/stellar_tube_coffee_martini_smoke300_tubecmp/dynerf/coffee_martini",
+    "flame_steak": "${GS_ROOT}/runs/stellar_tube_flame_steak_smoke300_tubecmp/dynerf/flame_steak",
 }
 Path(sys.argv[1]).write_text(json.dumps(payload, indent=2), encoding="utf-8")
 PY

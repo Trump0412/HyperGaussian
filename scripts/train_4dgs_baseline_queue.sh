@@ -6,12 +6,12 @@
 # ============================================================
 set -euo pipefail
 
-GS_ROOT="/root/autodl-tmp/HyperGaussian"
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/common.sh"
+
 REPORT_DIR="${GS_ROOT}/reports/4dgs_baseline"
 mkdir -p "${REPORT_DIR}"
 LOG="${REPORT_DIR}/train_queue.log"
 
-source "${GS_ROOT}/scripts/common.sh"
 PY_CMD="$(gs_python_cmd)"
 
 log() { echo "[$(date '+%H:%M:%S')] $*" | tee -a "${LOG}"; }

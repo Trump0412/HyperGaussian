@@ -31,6 +31,7 @@ MANIFEST_JSON = REPORT_DIR / "manifest.json"
 PUBLIC_EVAL_DIR = REPORT_DIR / "public_eval"
 
 FULLFRAME_OUT_NAME = "full_metrics_with_lpips_refresh_20260328.json"
+EXPERIMENT_ROOT = Path(os.environ.get("GS_EXPERIMENT_ROOT", str(REPO_ROOT / "experiments")))
 BASE_SIGNATURE = "s3_span040_sigma032_cov005_noaccel"
 
 BASE_ENV = {
@@ -295,13 +296,13 @@ def public_eval_output(scene_key: str) -> tuple[Path, Path]:
 
 
 def split_cookie_removal_root() -> Path:
-    return Path("/root/autodl-tmp/hypergaussian_experiments") / (
+    return EXPERIMENT_ROOT / (
         f"{SPLIT_COOKIE['removal_stamp']}_{SPLIT_COOKIE['removal_tag']}"
     )
 
 
 def cut_lemon_removal_root() -> Path:
-    return Path("/root/autodl-tmp/hypergaussian_experiments") / (
+    return EXPERIMENT_ROOT / (
         f"{CUT_LEMON['removal_stamp']}_{CUT_LEMON['removal_tag']}"
     )
 

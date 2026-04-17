@@ -11,7 +11,7 @@ Examples:
 ## 2) Commit curated release files
 
 ```bash
-cd /root/autodl-tmp/HyperGaussian
+cd <AUTODL_ROOT>/HyperGaussian
 
 git add \
   LICENSE \

@@ -6,17 +6,17 @@
 
 | 环境 | 默认路径 | 用途 |
 | --- | --- | --- |
-| main CUDA 12.1 | `/root/autodl-tmp/.conda-envs/gs4d-cuda121-py310` | 日常训练、评测、导出 |
-| official baseline | `/root/autodl-tmp/.conda-envs/gs4d-baseline-py37` | 对齐官方 `4DGaussians` 兼容配置 |
-| Grounded-SAM-2 | `/root/autodl-tmp/.conda-envs/grounded-sam2-py310` | query planning、GSAM2 tracking、Qwen 相关脚本 |
-| DA3 | `/root/autodl-tmp/.conda-envs/da3-gs-py310` | 可选几何 bootstrap |
+| main CUDA 12.1 | `<AUTODL_ROOT>/.conda-envs/gs4d-cuda121-py310` | 日常训练、评测、导出 |
+| official baseline | `<AUTODL_ROOT>/.conda-envs/gs4d-baseline-py37` | 对齐官方 `4DGaussians` 兼容配置 |
+| Grounded-SAM-2 | `<AUTODL_ROOT>/.conda-envs/grounded-sam2-py310` | query planning、GSAM2 tracking、Qwen 相关脚本 |
+| DA3 | `<AUTODL_ROOT>/.conda-envs/da3-gs-py310` | 可选几何 bootstrap |
 
 ## 2. 主环境安装
 
 先安装主训练环境：
 
 ```bash
-cd /root/autodl-tmp/HyperGaussian
+cd <AUTODL_ROOT>/HyperGaussian
 bash scripts/setup_baseline_env.sh cuda121
 ```
 
@@ -29,7 +29,7 @@ bash scripts/setup_baseline_env.sh official
 安装后建议立刻做检查：
 
 ```bash
-conda run -p /root/autodl-tmp/.conda-envs/gs4d-cuda121-py310 \
+conda run -p <AUTODL_ROOT>/.conda-envs/gs4d-cuda121-py310 \
   python scripts/check_install.py
 ```
 
@@ -46,9 +46,9 @@ conda run -p /root/autodl-tmp/.conda-envs/gs4d-cuda121-py310 \
 默认约定如下：
 
 - `CUDA_HOME=/usr/local/cuda-12.1`
-- conda env root: `/root/autodl-tmp/.conda-envs`
-- conda pkg cache: `/root/autodl-tmp/.conda-pkgs`
-- pip cache: `/root/autodl-tmp/.cache/pip`
+- conda env root: `<AUTODL_ROOT>/.conda-envs`
+- conda pkg cache: `<AUTODL_ROOT>/.conda-pkgs`
+- pip cache: `<AUTODL_ROOT>/.cache/pip`
 
 如果机器上 CUDA 不在默认路径，需要先设置：
 

@@ -1,4 +1,5 @@
 import argparse
+import os
 import json
 import shutil
 from datetime import date
@@ -6,7 +7,7 @@ from pathlib import Path
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_SOURCE_ROOT = Path("/root/autodl-tmp/GR4D-Bench")
+DEFAULT_SOURCE_ROOT = Path(os.environ.get("GR4D_BENCH_ROOT", str(REPO_ROOT / "data" / "GR4D-Bench")))
 DEFAULT_OUTPUT_ROOT = REPO_ROOT / "data" / "benchmarks" / "gr4d_curated_v1"
 CUT_LEMON_SUPPORT_DIR = (
     REPO_ROOT

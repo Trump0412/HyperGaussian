@@ -4,6 +4,7 @@ set -euo pipefail
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/common.sh"
 
 require_conda_bin
+require_grounded_sam2
 
 GSAM2_ROOT="${GS_ROOT}/external/Grounded-SAM-2"
 PYTHON_VERSION="${1:-3.10}"

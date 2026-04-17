@@ -2,9 +2,12 @@
 set -euo pipefail
 
 GS_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-GS_ENV_ROOT="${GS4D_ENV_ROOT:-/root/autodl-tmp/.conda-envs}"
-GS_CACHE_ROOT="${GS4D_CACHE_ROOT:-/root/autodl-tmp/.cache}"
-GS_CONDA_PKGS_DIRS="${GS4D_CONDA_PKGS_DIRS:-/root/autodl-tmp/.conda-pkgs}"
+GS_REPO_PARENT="$(cd "${GS_ROOT}/.." && pwd)"
+GS_HOME_DEFAULT="${HOME:-/tmp}"
+GS_CACHE_ROOT="${GS4D_CACHE_ROOT:-${GS_HOME_DEFAULT}/.cache/hypergaussian}"
+GS_ENV_ROOT="${GS4D_ENV_ROOT:-${GS_CACHE_ROOT}/conda-envs}"
+GS_LEGACY_ENV_ROOT="${GS4D_LEGACY_ENV_ROOT:-${GS_REPO_PARENT}/.conda-envs}"
+GS_CONDA_PKGS_DIRS="${GS4D_CONDA_PKGS_DIRS:-${GS_CACHE_ROOT}/conda-pkgs}"
 GS_PIP_CACHE_DIR="${GS4D_PIP_CACHE_DIR:-${GS_CACHE_ROOT}/pip}"
 GS_TORCH_HOME="${GS4D_TORCH_HOME:-${GS_CACHE_ROOT}/torch}"
 GS_MPLCONFIGDIR="${GS4D_MPLCONFIGDIR:-${GS_CACHE_ROOT}/matplotlib}"
@@ -20,7 +23,11 @@ resolve_conda_bin() {
     return
   fi
   local candidate
-  for candidate in /root/miniconda3/bin/conda /opt/conda/bin/conda /usr/local/miniconda3/bin/conda; do
+  for candidate in \
+    "${GS_HOME_DEFAULT}/miniconda3/bin/conda" \
+    /root/miniconda3/bin/conda \
+    /opt/conda/bin/conda \
+    /usr/local/miniconda3/bin/conda; do
     if [[ -x "${candidate}" ]]; then
       printf '%s' "${candidate}"
       return
@@ -37,6 +44,30 @@ require_conda_bin() {
   fi
 }
 
+require_external_dependency() {
+  local check_path="$1"
+  local dep_name="$2"
+  if [[ -e "${check_path}" ]]; then
+    return 0
+  fi
+  cat >&2 <<MSG
+Missing external dependency: ${dep_name}
+Expected path: ${check_path}
+
+Run:
+  bash ${GS_ROOT}/scripts/bootstrap_external.sh
+MSG
+  return 2
+}
+
+require_4dgaussians() {
+  require_external_dependency "${GS_ROOT}/external/4DGaussians/train.py" "4DGaussians"
+}
+
+require_grounded_sam2() {
+  require_external_dependency "${GS_ROOT}/external/Grounded-SAM-2/sam2/__init__.py" "Grounded-SAM-2"
+}
+
 detect_default_env_path() {
   if [[ -n "${GS4D_ENV_PATH:-}" ]]; then
     printf '%s' "${GS4D_ENV_PATH}"
@@ -50,12 +81,20 @@ detect_default_env_path() {
     printf '%s' "${GS_ENV_ROOT}/gs4d-baseline-py37"
     return
   fi
-  if [[ -d "/root/miniconda3/envs/gs4d-cuda121-py310" ]]; then
-    printf '%s' "/root/miniconda3/envs/gs4d-cuda121-py310"
+  if [[ -d "${GS_LEGACY_ENV_ROOT}/gs4d-cuda121-py310" ]]; then
+    printf '%s' "${GS_LEGACY_ENV_ROOT}/gs4d-cuda121-py310"
     return
   fi
-  if [[ -d "/root/miniconda3/envs/gs4d-baseline-py37" ]]; then
-    printf '%s' "/root/miniconda3/envs/gs4d-baseline-py37"
+  if [[ -d "${GS_LEGACY_ENV_ROOT}/gs4d-baseline-py37" ]]; then
+    printf '%s' "${GS_LEGACY_ENV_ROOT}/gs4d-baseline-py37"
+    return
+  fi
+  if [[ -d "${GS_HOME_DEFAULT}/miniconda3/envs/gs4d-cuda121-py310" ]]; then
+    printf '%s' "${GS_HOME_DEFAULT}/miniconda3/envs/gs4d-cuda121-py310"
+    return
+  fi
+  if [[ -d "${GS_HOME_DEFAULT}/miniconda3/envs/gs4d-baseline-py37" ]]; then
+    printf '%s' "${GS_HOME_DEFAULT}/miniconda3/envs/gs4d-baseline-py37"
     return
   fi
   printf '%s' "${GS_ENV_ROOT}/gs4d-cuda121-py310"
@@ -66,6 +105,7 @@ GS_ENV_PATH="$(detect_default_env_path)"
 GS_ENV_NAME="${GS4D_ENV_NAME:-$(basename "${GS_ENV_PATH}")}"
 export GS_ROOT
 export GS_ENV_ROOT
+export GS_LEGACY_ENV_ROOT
 export GS_CACHE_ROOT
 export GS_ENV_PATH
 export GS_ENV_NAME

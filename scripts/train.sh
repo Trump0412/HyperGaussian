@@ -2,6 +2,7 @@
 set -euo pipefail
 
 source "$(dirname "$0")/common.sh"
+require_4dgaussians
 
 DATASET="${1:-dnerf}"
 SCENE="${2:-mutant}"

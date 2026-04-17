@@ -2,7 +2,7 @@
 
 ## Scope
 
-- Repository: `/root/autodl-tmp/HyperGaussian`
+- Repository: `<AUTODL_ROOT>/HyperGaussian`
 - Goal: evaluate whether the codebase is ready for a clean public release.
 
 ## Verdict

@@ -36,7 +36,7 @@ def _load_camera_class():
 Camera = _load_camera_class()
 
 
-DEFAULT_QWEN_MODEL = Path(os.environ.get("HYPERGAUSSIAN_QWEN_MODEL", "/root/autodl-tmp/models/Qwen3-VL-8B-Instruct"))
+DEFAULT_QWEN_MODEL = Path(os.environ.get("HYPERGAUSSIAN_QWEN_MODEL", str(_PROJECT_ROOT / "models" / "Qwen3-VL-8B-Instruct")))
 
 ENTITY_PROMPT_TEMPLATE = """You are assigning continuous semantics to one HyperGaussian 4D worldtube entity.
 You are given a few representative crops from the same entity across time and a geometry prior derived from the 4D reconstruction.

@@ -44,7 +44,7 @@ prepare_scene() {
   fi
 
   echo "[extract] ${asset_name} -> ${target_dir}"
-  /root/miniconda3/bin/python3 - <<PY "${zip_path}" "${target_dir}"
+  ${PYTHON_FOR_EXTRACTION:-$(command -v python3 || command -v python)} - <<PY "${zip_path}" "${target_dir}"
 import os, shutil, sys, tempfile, zipfile
 zip_path, target_dir = sys.argv[1], sys.argv[2]
 temp_dir = tempfile.mkdtemp(prefix="hypernerf_extract_", dir=os.path.dirname(target_dir))

@@ -3,9 +3,22 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PROFILE="${1:-${GS4D_ENV_PROFILE:-cuda121}}"
-ENV_ROOT="${GS4D_ENV_ROOT:-/root/autodl-tmp/.conda-envs}"
-CONDA_PKGS_DIRS="${GS4D_CONDA_PKGS_DIRS:-/root/autodl-tmp/.conda-pkgs}"
-PIP_CACHE_DIR="${GS4D_PIP_CACHE_DIR:-/root/autodl-tmp/.cache/pip}"
+CACHE_ROOT="${GS4D_CACHE_ROOT:-${HOME:-/tmp}/.cache/hypergaussian}"
+ENV_ROOT="${GS4D_ENV_ROOT:-${CACHE_ROOT}/conda-envs}"
+CONDA_PKGS_DIRS="${GS4D_CONDA_PKGS_DIRS:-${CACHE_ROOT}/conda-pkgs}"
+PIP_CACHE_DIR="${GS4D_PIP_CACHE_DIR:-${CACHE_ROOT}/pip}"
+
+require_external_4dgaussians() {
+  if [[ -f "${ROOT_DIR}/external/4DGaussians/train.py" ]]; then
+    return 0
+  fi
+  cat >&2 <<MSG
+Missing dependency: external/4DGaussians
+Run:
+  bash ${ROOT_DIR}/scripts/bootstrap_external.sh
+MSG
+  exit 2
+}
 
 resolve_conda_bin() {
   if [[ -n "${GS4D_CONDA_BIN:-}" && -x "${GS4D_CONDA_BIN}" ]]; then
@@ -17,7 +30,7 @@ resolve_conda_bin() {
     return
   fi
   local candidate
-  for candidate in /root/miniconda3/bin/conda /opt/conda/bin/conda /usr/local/miniconda3/bin/conda; do
+  for candidate in "${HOME:-/tmp}/miniconda3/bin/conda" /root/miniconda3/bin/conda /opt/conda/bin/conda /usr/local/miniconda3/bin/conda; do
     if [[ -x "${candidate}" ]]; then
       printf '%s' "${candidate}"
       return
@@ -73,6 +86,8 @@ ensure_cuda_headers() {
 }
 
 install_official_profile() {
+  require_external_4dgaussians
+
   local env_name="${GS4D_ENV_NAME:-gs4d-baseline-py37}"
   local env_prefix
   env_prefix="${ENV_ROOT}/${env_name}"
@@ -98,6 +113,8 @@ install_official_profile() {
 }
 
 install_cuda121_profile() {
+  require_external_4dgaussians
+
   local env_name="${GS4D_ENV_NAME:-gs4d-cuda121-py310}"
   local env_prefix
   env_prefix="${ENV_ROOT}/${env_name}"

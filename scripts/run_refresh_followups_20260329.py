@@ -5,7 +5,7 @@ import time
 from pathlib import Path
 
 
-PROJECT_ROOT = Path("/root/autodl-tmp/HyperGaussian")
+PROJECT_ROOT = Path("${GS_ROOT}")
 REPORT_LOG = PROJECT_ROOT / "reports" / "refresh_followups_20260329.log"
 
 

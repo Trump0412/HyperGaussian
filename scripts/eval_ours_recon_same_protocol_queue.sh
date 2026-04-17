@@ -12,46 +12,45 @@
 # ============================================================
 set -euo pipefail
 
-GS_ROOT="${GS_ROOT:-/root/autodl-tmp/HyperGaussian}"
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/common.sh"
+
 REPORT_DIR="${GS_ROOT}/reports/ours_recon_same_protocol"
 mkdir -p "${REPORT_DIR}"
 LOG="${REPORT_DIR}/eval_queue.log"
 
-source "${GS_ROOT}/scripts/common.sh"
 PY_CMD="$(gs_python_cmd)"
 
-log() { echo "[$(date '+%H:%M:%S')] $*" | tee -a "${LOG}"; }
+log() { echo "[$(date +%H:%M:%S)] $*" | tee -a "${LOG}"; }
 
-python3 - <<'PY' > "${REPORT_DIR}/ours_runs_manifest.tsv"
+gs_python - <<PY > "${REPORT_DIR}/ours_runs_manifest.tsv"
 import os
 from pathlib import Path
 
-GS_ROOT = Path(os.environ.get("GS_ROOT", "/root/autodl-tmp/HyperGaussian"))
+gs_root = Path(os.environ.get("GS_ROOT", ".")).resolve()
 
 # run_dir, dataset, scene_name
 RUNS = [
     # ready weaktube (hypernerf)
-    (GS_ROOT / "runs/stellar_tube_4dlangsplat_refresh_20260328_espresso/hypernerf/espresso", "hypernerf", "espresso"),
-    (GS_ROOT / "runs/stellar_tube_4dlangsplat_refresh_20260328_americano/hypernerf/americano", "hypernerf", "americano"),
-    (GS_ROOT / "runs/stellar_tube_cutlemon_refresh_20260329/hypernerf/cut-lemon1", "hypernerf", "cut-lemon1"),
-    (GS_ROOT / "runs/stellar_tube_full6_20260328_histplus_span040_sigma032/hypernerf/split-cookie", "hypernerf", "split-cookie"),
+    (gs_root / "runs/stellar_tube_4dlangsplat_refresh_20260328_espresso/hypernerf/espresso", "hypernerf", "espresso"),
+    (gs_root / "runs/stellar_tube_4dlangsplat_refresh_20260328_americano/hypernerf/americano", "hypernerf", "americano"),
+    (gs_root / "runs/stellar_tube_cutlemon_refresh_20260329/hypernerf/cut-lemon1", "hypernerf", "cut-lemon1"),
+    (gs_root / "runs/stellar_tube_full6_20260328_histplus_span040_sigma032/hypernerf/split-cookie", "hypernerf", "split-cookie"),
     # benchmark training (hypernerf)
-    (GS_ROOT / "runs/stellar_tube_ours_benchmark_keyboard/hypernerf/keyboard", "hypernerf", "keyboard"),
-    (GS_ROOT / "runs/stellar_tube_ours_benchmark_torchocolate/hypernerf/torchocolate", "hypernerf", "torchocolate"),
+    (gs_root / "runs/stellar_tube_ours_benchmark_keyboard/hypernerf/keyboard", "hypernerf", "keyboard"),
+    (gs_root / "runs/stellar_tube_ours_benchmark_torchocolate/hypernerf/torchocolate", "hypernerf", "torchocolate"),
     # benchmark training (dynerf)
-    (GS_ROOT / "runs/stellar_tube_ours_benchmark_coffee_martini/dynerf/coffee_martini", "dynerf", "coffee_martini"),
-    (GS_ROOT / "runs/stellar_tube_ours_benchmark_flame_steak/dynerf/flame_steak", "dynerf", "flame_steak"),
+    (gs_root / "runs/stellar_tube_ours_benchmark_coffee_martini/dynerf/coffee_martini", "dynerf", "coffee_martini"),
+    (gs_root / "runs/stellar_tube_ours_benchmark_flame_steak/dynerf/flame_steak", "dynerf", "flame_steak"),
     # Neu3D (dynerf layout in this repo)
-    (GS_ROOT / "runs/stellar_tube_ours_benchmark/dynerf/cook_spinach", "dynerf", "cook_spinach"),
-    (GS_ROOT / "runs/stellar_tube_ours_benchmark/dynerf/cut_roasted_beef", "dynerf", "cut_roasted_beef"),
-    (GS_ROOT / "runs/stellar_tube_ours_benchmark/dynerf/sear_steak", "dynerf", "sear_steak"),
-    (GS_ROOT / "runs/stellar_tube_ours_benchmark/dynerf/flame_salmon_1", "dynerf", "flame_salmon_1"),
+    (gs_root / "runs/stellar_tube_ours_benchmark/dynerf/cook_spinach", "dynerf", "cook_spinach"),
+    (gs_root / "runs/stellar_tube_ours_benchmark/dynerf/cut_roasted_beef", "dynerf", "cut_roasted_beef"),
+    (gs_root / "runs/stellar_tube_ours_benchmark/dynerf/sear_steak", "dynerf", "sear_steak"),
+    (gs_root / "runs/stellar_tube_ours_benchmark/dynerf/flame_salmon_1", "dynerf", "flame_salmon_1"),
 ]
 
 for run_dir, ds, scene in RUNS:
     print(f"{run_dir}\t{ds}\t{scene}")
 PY
-
 eval_one() {
   local run_dir="$1"
   local dataset="$2"
@@ -74,7 +73,7 @@ eval_one() {
 
   # Extract params from config.yaml
   local params_json
-  params_json="$(python3 - <<PY
+  params_json="$(gs_python - <<PY
 import json, yaml
 cfg=yaml.safe_load(open('${run_dir}/config.yaml','r'))
 keys=[
@@ -89,7 +88,7 @@ PY
 
   # Convert JSON -> bash vars via python (robust against None)
   local gate_sharpness drift_scale gate_mix drift_mix tube_samples tube_span tube_sigma tube_weight_power tube_cov_mix accel_enabled
-  read -r gate_sharpness drift_scale gate_mix drift_mix tube_samples tube_span tube_sigma tube_weight_power tube_cov_mix accel_enabled < <(python3 - <<PY
+  read -r gate_sharpness drift_scale gate_mix drift_mix tube_samples tube_span tube_sigma tube_weight_power tube_cov_mix accel_enabled < <(gs_python - <<PY
 import json
 d=json.loads('''${params_json}''')
 def f(x, default):

@@ -2,6 +2,8 @@
 set -euo pipefail
 
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/common.sh"
+require_4dgaussians
+require_grounded_sam2
 
 RUN_DIR="$1"
 DATASET_DIR="$2"

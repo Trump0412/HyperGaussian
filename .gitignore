@@ -18,5 +18,5 @@ __pycache__/
 docs/weaktube_remote_lessons_and_locked_profile_20260404.md
 scripts/run_splitcookie_weaktube_opt_20260401.py
 
-# Vendored dependencies are managed outside this release snapshot
+# External dependencies are fetched locally via scripts/bootstrap_external.sh
 external/

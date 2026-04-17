@@ -4,7 +4,7 @@ set -euo pipefail
 source "$(dirname "$0")/common.sh"
 
 ANNOT_ROOT="${GS_ROOT}/data/benchmarks/4dlangsplat/HyperNeRF-Annotation"
-RAW_ROOT="${HYPERNERF_RAW_ROOT:-/root/autodl-tmp/data/HyperNeRF}"
+RAW_ROOT="${HYPERNERF_RAW_ROOT:-${GS_ROOT}/data/raw/HyperNeRF}"
 RUN_SUFFIX="${1:-compare5k}"
 shift || true
 

@@ -1,14 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-GS_ROOT="/root/autodl-tmp/HyperGaussian"
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/common.sh"
+
 REPORT_DIR="${GS_ROOT}/reports/strict_14k_repro"
 LOG="${REPORT_DIR}/queue.log"
 RESULTS_JSON="${REPORT_DIR}/results_latest.json"
 RESULTS_MD="${REPORT_DIR}/results_latest.md"
 mkdir -p "${REPORT_DIR}"
-
-source "${GS_ROOT}/scripts/common.sh"
 
 SEEDS=(3407 7777 2026)
 SCENES=("hypernerf misc/americano americano" "hypernerf misc/espresso espresso")

@@ -9,38 +9,39 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 REPORT_ROOT = PROJECT_ROOT / "reports" / "papersafe_aligned_refresh_20260328"
-GS_PYTHON = Path("/root/autodl-tmp/.conda-envs/gs4d-cuda121-py310/bin/python")
-GSAM2_PYTHON = Path("/root/autodl-tmp/.conda-envs/grounded-sam2-py310/bin/python")
+GS_PYTHON = Path(os.environ.get("GS4D_PYTHON", str(Path(os.environ.get("GS4D_ENV_ROOT", str(Path.home() / ".cache" / "hypergaussian" / "conda-envs"))) / "gs4d-cuda121-py310" / "bin" / "python")))
+GSAM2_PYTHON = Path(os.environ.get("GS4D_GSAM2_PYTHON", str(Path(os.environ.get("GS4D_ENV_ROOT", str(Path.home() / ".cache" / "hypergaussian" / "conda-envs"))) / "grounded-sam2-py310" / "bin" / "python")))
 
+PAPERPUSH_ROOT = Path(os.environ.get("PAPERPUSH_ROOT", str(PROJECT_ROOT.parent)))
 
 SCENES = {
     "americano": {
         "run_dir": PROJECT_ROOT / "runs" / "stellar_tube_4dlangsplat_refresh_20260328_americano" / "hypernerf" / "americano",
         "dataset_dir": PROJECT_ROOT / "data" / "hypernerf" / "misc" / "americano",
         "annotation_dir": PROJECT_ROOT / "data" / "benchmarks" / "4dlangsplat" / "HyperNeRF-Annotation" / "americano",
-        "protocol_json": Path("/root/autodl-tmp/gs_4dlangsplat_paperpush_20260325/americano_protocol.json"),
-        "source_eval_json": Path("/root/autodl-tmp/gs_4dlangsplat_paperpush_20260327_papersafe_trackprimary_support_americano/americano_eval.json"),
+        "protocol_json": PAPERPUSH_ROOT / "gs_4dlangsplat_paperpush_20260325/americano_protocol.json",
+        "source_eval_json": PAPERPUSH_ROOT / "gs_4dlangsplat_paperpush_20260327_papersafe_trackprimary_support_americano/americano_eval.json",
     },
     "chickchicken": {
         "run_dir": PROJECT_ROOT / "runs" / "stellar_tube_4dlangsplat_refresh_20260328_chickchicken" / "hypernerf" / "chickchicken",
         "dataset_dir": PROJECT_ROOT / "data" / "hypernerf" / "interp" / "chickchicken",
         "annotation_dir": PROJECT_ROOT / "data" / "benchmarks" / "4dlangsplat" / "HyperNeRF-Annotation" / "chickchicken",
-        "protocol_json": Path("/root/autodl-tmp/gs_4dlangsplat_paperpush_20260325/chickchicken_protocol.json"),
-        "source_eval_json": Path("/root/autodl-tmp/gs_4dlangsplat_paperpush_20260325/chickchicken_public_query_eval_fullanchors.json"),
+        "protocol_json": PAPERPUSH_ROOT / "gs_4dlangsplat_paperpush_20260325/chickchicken_protocol.json",
+        "source_eval_json": PAPERPUSH_ROOT / "gs_4dlangsplat_paperpush_20260325/chickchicken_public_query_eval_fullanchors.json",
     },
     "espresso": {
         "run_dir": PROJECT_ROOT / "runs" / "stellar_tube_4dlangsplat_refresh_20260328_espresso" / "hypernerf" / "espresso",
         "dataset_dir": PROJECT_ROOT / "data" / "hypernerf" / "misc" / "espresso",
         "annotation_dir": PROJECT_ROOT / "data" / "benchmarks" / "4dlangsplat" / "HyperNeRF-Annotation" / "espresso",
-        "protocol_json": Path("/root/autodl-tmp/gs_4dlangsplat_paperpush_20260325/espresso_protocol.json"),
-        "source_eval_json": Path("/root/autodl-tmp/gs_4dlangsplat_paperpush_20260327_papersafe_trackprimary_support_espresso/espresso_eval.json"),
+        "protocol_json": PAPERPUSH_ROOT / "gs_4dlangsplat_paperpush_20260325/espresso_protocol.json",
+        "source_eval_json": PAPERPUSH_ROOT / "gs_4dlangsplat_paperpush_20260327_papersafe_trackprimary_support_espresso/espresso_eval.json",
     },
     "split-cookie": {
         "run_dir": PROJECT_ROOT / "runs" / "stellar_tube_full6_20260328_histplus_span040_sigma032" / "hypernerf" / "split-cookie",
         "dataset_dir": PROJECT_ROOT / "data" / "hypernerf" / "misc" / "split-cookie",
         "annotation_dir": PROJECT_ROOT / "data" / "benchmarks" / "4dlangsplat" / "HyperNeRF-Annotation" / "split-cookie",
-        "protocol_json": Path("/root/autodl-tmp/gs_4dlangsplat_paperpush_20260325/split_cookie_protocol.json"),
-        "source_eval_json": Path("/root/autodl-tmp/gs_4dlangsplat_paperpush_20260325/split_cookie_public_query_eval_accpush.json"),
+        "protocol_json": PAPERPUSH_ROOT / "gs_4dlangsplat_paperpush_20260325/split_cookie_protocol.json",
+        "source_eval_json": PAPERPUSH_ROOT / "gs_4dlangsplat_paperpush_20260325/split_cookie_public_query_eval_accpush.json",
     },
 }
 

@@ -58,16 +58,16 @@ HyperGaussian/
 
 本次建议生成的备份目录路径：
 
-- `/root/autodl-tmp/HyperGaussian_backups/open_source_release_20260327/`
+- `<AUTODL_ROOT>/HyperGaussian_backups/open_source_release_20260327/`
 
 本次实际归档文件路径：
 
-- `/root/autodl-tmp/HyperGaussian_backups/open_source_release_20260327/hypergaussian_open_source_core_20260327.tar.gz`
+- `<AUTODL_ROOT>/HyperGaussian_backups/open_source_release_20260327/hypergaussian_open_source_core_20260327.tar.gz`
 
 本次额外保存的文档快照：
 
-- `/root/autodl-tmp/HyperGaussian_backups/open_source_release_20260327/open_source_release_20260327/`
-- `/root/autodl-tmp/HyperGaussian_backups/open_source_release_20260327/README.md`
+- `<AUTODL_ROOT>/HyperGaussian_backups/open_source_release_20260327/open_source_release_20260327/`
+- `<AUTODL_ROOT>/HyperGaussian_backups/open_source_release_20260327/README.md`
 
 建议其中至少包含：
 

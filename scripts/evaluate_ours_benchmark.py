@@ -8,7 +8,7 @@ evaluate_ours_benchmark.py
 
 用法:
   python scripts/evaluate_ours_benchmark.py \
-    --benchmark /root/autodl-tmp/data/Ours_benchmark.json \
+    --benchmark data/benchmarks/r4d_bench_qa/benchmark.json \
     --query-root-map /path/to/query_root_map.json \
     --output-json reports/ours_benchmark_eval.json \
     [--output-md reports/ours_benchmark_eval.md]

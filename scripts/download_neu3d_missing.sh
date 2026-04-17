@@ -8,9 +8,10 @@
 # 需要先完成下载再进行COLMAP预处理
 
 set -uo pipefail
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/common.sh"
 
-DYNERF_ROOT="/root/autodl-tmp/HyperGaussian/data/dynerf"
-REPORT_DIR="/root/autodl-tmp/HyperGaussian/reports/ours_benchmark_eval"
+DYNERF_ROOT="${GS_ROOT}/data/dynerf"
+REPORT_DIR="${GS_ROOT}/reports/ours_benchmark_eval"
 LOG="${REPORT_DIR}/download_neu3d.log"
 mkdir -p "${DYNERF_ROOT}" "${REPORT_DIR}"
 
@@ -31,7 +32,7 @@ SCENES=(
 )
 
 # 检查磁盘空间
-FREE_GB=$(df -BG /root/autodl-tmp | awk 'NR==2{print int($4)}')
+FREE_GB=$(df -BG "${GS_ROOT}" | awk 'NR==2{print int($4)}')
 log_msg "可用磁盘空间: ${FREE_GB} GB"
 
 if [[ "${FREE_GB}" -lt 50 ]]; then

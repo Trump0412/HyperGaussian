@@ -10,7 +10,7 @@ REPORT_DIR="${GS_ROOT}/reports/ours_benchmark_eval"
 mkdir -p "${REPORT_DIR}"
 LOG="${REPORT_DIR}/query_pipeline.log"
 
-BENCHMARK_JSON="/root/autodl-tmp/data/Ours_benchmark.json"
+BENCHMARK_JSON="${1:-${OURS_BENCHMARK_JSON:-${GS_ROOT}/data/benchmarks/r4d_bench_qa/benchmark.json}}"
 QUERY_ROOT_MAP="${REPORT_DIR}/query_root_map.json"
 DATASET_DIR_MAP="${REPORT_DIR}/dataset_dir_map.json"
 
@@ -64,7 +64,7 @@ update_map() {
   local key="$2"
   local value="$3"
   # 使用python更新json
-  python3 -c "
+  gs_python -c "
 import json, sys
 path, key, value = sys.argv[1], sys.argv[2], sys.argv[3]
 try:
@@ -84,11 +84,11 @@ FULL_QUERIES_JSON="${REPORT_DIR}/benchmark_full_queries.json"
 # 若补全版本不存在，先生成
 if [[ ! -f "${FULL_QUERIES_JSON}" ]]; then
   log_msg "生成完整查询列表（补全空文本）..."
-  python3 "${GS_ROOT}/scripts/prepare_ours_benchmark_queries.py"
+  gs_python "${GS_ROOT}/scripts/prepare_ours_benchmark_queries.py"
 fi
 
 # 使用补全后的查询列表
-python3 - <<'PYEOF' > "${REPORT_DIR}/benchmark_queries.tsv" "${FULL_QUERIES_JSON}"
+gs_python - <<'PYEOF' > "${REPORT_DIR}/benchmark_queries.tsv" "${FULL_QUERIES_JSON}"
 import json, sys
 queries = json.loads(open(sys.argv[1]).read())
 for q in queries:

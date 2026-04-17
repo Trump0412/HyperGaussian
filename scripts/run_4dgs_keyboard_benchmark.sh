@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-GS_ROOT="/root/autodl-tmp/HyperGaussian"
-PY="/root/autodl-tmp/.conda-envs/gs4d-cuda121-py310/bin/python"
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/common.sh"
+require_4dgaussians
+
+PY="${GS4D_KEYBOARD_PY:-${GS_ENV_PATH}/bin/python}"
 RUN_DIR="${GS_ROOT}/runs/baseline_4dgs_keyboard_benchmark_20260408"
 SOURCE_PATH="${GS_ROOT}/data/hypernerf/misc/keyboard"
 CONFIG_PATH="${GS_ROOT}/external/4DGaussians/arguments/hypernerf/default.py"
