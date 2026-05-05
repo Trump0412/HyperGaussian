@@ -10,22 +10,59 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
-    body { font-family: 'Noto Sans', sans-serif; }
+    body {
+      font-family: 'Noto Sans', sans-serif;
+      color: #172033;
+      background:
+        radial-gradient(circle at top left, rgba(15,118,110,0.08), transparent 24%),
+        radial-gradient(circle at 90% 4%, rgba(37,99,235,0.08), transparent 20%),
+        linear-gradient(180deg, #fbfdff 0%, #f5f8fc 100%);
+    }
 
-    .navbar { background-color: #1a1a2e; }
-    .navbar-item, .navbar-link { color: #e0e0e0 !important; }
-    .navbar-item:hover { background-color: #16213e !important; color: #fff !important; }
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      border-bottom: 1px solid rgba(148,163,184,0.18);
+      background: rgba(255,255,255,0.9);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 10px 30px rgba(15,23,42,0.04);
+    }
+    .navbar-item, .navbar-link {
+      color: #233049 !important;
+      font-family: 'Google Sans', sans-serif;
+      font-weight: 600;
+    }
+    .navbar-item:hover {
+      background: rgba(37,99,235,0.06) !important;
+      color: #1d4ed8 !important;
+    }
 
-    .hero { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); }
-    .hero .title { color: #ffffff; font-family: 'Google Sans', sans-serif; }
+    .hero {
+      background: linear-gradient(180deg, rgba(255,255,255,0.75) 0%, rgba(247,251,255,0.92) 100%);
+    }
+    .hero .title {
+      color: #111827;
+      font-family: 'Google Sans', sans-serif;
+    }
 
     .author-block { display: inline-block; margin: 0 8px; }
-    .author-block a { color: #74b9ff; font-weight: 600; }
-    .author-block a:hover { color: #a29bfe; }
+    .author-block a { color: #2563eb; font-weight: 600; }
+    .author-block a:hover { color: #1d4ed8; }
 
-    .publication-links .button { margin: 4px; border-radius: 20px; font-weight: 600; }
-    .publication-links .button.is-dark { background-color: #2d3436; }
-    .publication-links .button.is-dark:hover { background-color: #636e72; }
+    .publication-links .button {
+      margin: 4px;
+      border-radius: 20px;
+      font-weight: 600;
+      border: 1px solid rgba(148,163,184,0.2);
+      box-shadow: 0 12px 24px rgba(15,23,42,0.06);
+      background: rgba(255,255,255,0.88);
+      color: #233049;
+    }
+    .publication-links .button:hover {
+      background: rgba(37,99,235,0.08);
+      color: #1d4ed8;
+    }
 
     .section-title {
       font-family: 'Google Sans', sans-serif;
@@ -40,7 +77,7 @@
       display: block;
       width: 60px;
       height: 3px;
-      background: #6c5ce7;
+      background: #0f766e;
       margin: 0.5rem auto 0;
       border-radius: 2px;
     }
@@ -113,9 +150,9 @@
       overflow-x: auto;
     }
 
-    footer { background-color: #1a1a2e; color: #b2bec3; padding: 2rem 0; }
-    footer a { color: #74b9ff; }
-    footer a:hover { color: #a29bfe; }
+    footer { background-color: rgba(255,255,255,0.85); color: #64748b; padding: 2rem 0; border-top: 1px solid rgba(148,163,184,0.16); }
+    footer a { color: #2563eb; }
+    footer a:hover { color: #1d4ed8; }
 
     .paper-figure {
       border-radius: 8px;
@@ -134,7 +171,7 @@
 <body>
 
 <!-- Navbar -->
-<nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
+<nav class="navbar" role="navigation" aria-label="main navigation">
   <div class="navbar-brand">
     <a class="navbar-item" href="https://trump0412.github.io/HyperGaussian/">
       <strong style="color:#74b9ff;">HyperGaussian</strong>
@@ -145,22 +182,23 @@
   </div>
   <div id="navMenu" class="navbar-menu">
     <div class="navbar-start" style="flex-grow:1; justify-content:center;">
-      <a class="navbar-item" href="#abstract">Abstract</a>
+      <a class="navbar-item" href="https://arxiv.org/abs/XXXX.XXXXX" target="_blank" rel="noopener noreferrer">Paper</a>
+      <a class="navbar-item" href="https://github.com/Trump0412/HyperGaussian" target="_blank" rel="noopener noreferrer">Code</a>
       <a class="navbar-item" href="#benchmark">Benchmark</a>
-      <a class="navbar-item" href="#method">Method</a>
       <a class="navbar-item" href="#results">Results</a>
-      <a class="navbar-item" href="#citation">Citation</a>
+      <a class="navbar-item" href="#qualitative">Qualitative</a>
+      <a class="navbar-item" href="#bibtex">BibTeX</a>
     </div>
   </div>
 </nav>
 
 <!-- Hero -->
-<section class="hero" style="padding-top:3.25rem;">
+<section class="hero">
   <div class="hero-body">
     <div class="container is-max-desktop">
       <div class="columns is-centered">
         <div class="column has-text-centered">
-          <p class="is-size-6 has-text-weight-semibold" style="color:#a29bfe; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:0.75rem;">arXiv Preprint</p>
+          <p class="is-size-6 has-text-weight-semibold" style="color:#0f766e; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:0.75rem;">arXiv Preprint</p>
           <h1 class="title is-2 publication-title">
             HyperGaussian: Referring 4D Gaussian Splatting
           </h1>
@@ -170,21 +208,33 @@
             <span class="author-block">Author 3<sup>1</sup></span>
             <span class="author-block">Author 4<sup>2</sup></span>
           </div>
-          <div class="is-size-6" style="color:#c8d6e5; margin-bottom:1.5rem;">
+          <div class="is-size-6" style="color:#526178; margin-bottom:1.5rem;">
             <span><sup>1</sup>Affiliation 1 &nbsp; <sup>2</sup>Affiliation 2</span>
           </div>
           <div class="publication-links">
-            <a href="https://arxiv.org/abs/XXXX.XXXXX" target="_blank" rel="noopener noreferrer" class="button is-dark is-rounded">
+            <a href="https://arxiv.org/abs/XXXX.XXXXX" target="_blank" rel="noopener noreferrer" class="button is-rounded">
               <span class="icon"><i class="fas fa-file-pdf"></i></span>
-              <span>arXiv (Coming Soon)</span>
+              <span>Paper</span>
             </a>
-            <a href="https://github.com/Trump0412/HyperGaussian" target="_blank" rel="noopener noreferrer" class="button is-dark is-rounded">
+            <a href="https://github.com/Trump0412/HyperGaussian" target="_blank" rel="noopener noreferrer" class="button is-rounded">
               <span class="icon"><i class="fab fa-github"></i></span>
               <span>Code</span>
             </a>
-            <a href="https://huggingface.co/datasets/LiYacheng/r4d-bench-qa" target="_blank" rel="noopener noreferrer" class="button is-dark is-rounded">
-              <span class="icon">🤗</span>
-              <span>Dataset</span>
+            <a href="#benchmark" class="button is-rounded">
+              <span class="icon"><i class="fas fa-database"></i></span>
+              <span>Benchmark</span>
+            </a>
+            <a href="#results" class="button is-rounded">
+              <span class="icon"><i class="fas fa-chart-line"></i></span>
+              <span>Results</span>
+            </a>
+            <a href="#qualitative" class="button is-rounded">
+              <span class="icon"><i class="far fa-images"></i></span>
+              <span>Qualitative</span>
+            </a>
+            <a href="#bibtex" class="button is-rounded">
+              <span class="icon"><i class="fas fa-quote-right"></i></span>
+              <span>BibTeX</span>
             </a>
           </div>
         </div>
@@ -421,7 +471,7 @@
 </section>
 
 <!-- Qualitative Results (Fig5_n) -->
-<section class="section" style="background-color:#f8f9fa;">
+<section class="section" id="qualitative" style="background-color:#f8f9fa;">
   <div class="container is-max-desktop">
     <h2 class="section-title">Qualitative Comparison</h2>
     <div class="columns is-centered has-text-centered">
@@ -455,9 +505,9 @@
 </section>
 
 <!-- Citation -->
-<section class="section" id="citation" style="background-color:#f8f9fa;">
+<section class="section" id="bibtex" style="background-color:#f8f9fa;">
   <div class="container is-max-desktop">
-    <h2 class="section-title">Citation</h2>
+    <h2 class="section-title">BibTeX</h2>
     <div class="columns is-centered">
       <div class="column is-four-fifths">
         <pre class="bibtex-block">@article{hypergaussian2026,
@@ -499,7 +549,7 @@
 <footer class="footer">
   <div class="content has-text-centered">
     <p>
-      <strong style="color:#dfe6e9;">HyperGaussian</strong> &bull; arXiv Preprint &bull;
+      <strong style="color:#172033;">HyperGaussian</strong> &bull; arXiv Preprint &bull;
       <a href="https://github.com/Trump0412/HyperGaussian">GitHub</a>
     </p>
   </div>
