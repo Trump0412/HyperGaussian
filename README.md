@@ -28,8 +28,8 @@
 
 | Method | Acc ↑ | vIoU ↑ | PSNR ↑ | SSIM ↑ | LPIPS ↓ |
 |---|---|---|---|---|---|
-| Segment then Splat | 55.6 | 28.4 | 20.3208 | 0.7027 | **0.3971** |
-| 4D LangSplat | 58.4 | 32.1 | 20.3208 | 0.7027 | **0.3971** |
+| Segment then Splat | 55.6 | 28.4 | 20.3208 | 0.7027 | 0.3971 |
+| 4D LangSplat | 58.4 | 32.1 | 20.3208 | 0.7027 | 0.3971 |
 | HyperGaussian (Ours) | **76.5** | **34.4** | **20.4159** | **0.7069** | **0.3942** |
 
 ### Generalization — 4D LangSplat HyperNeRF split
