@@ -3,9 +3,12 @@ title: "HyperGaussian: Referring 4D Gaussian Splatting"
 message: "If you use this project, please cite the corresponding paper."
 type: software
 authors:
-  - family-names: "HyperGaussian Team"
-    given-names: "R4DGS"
+  - family-names: "Author1FamilyName"
+    given-names: "Author1GivenName"
+  - family-names: "Author2FamilyName"
+    given-names: "Author2GivenName"
 repository-code: "https://github.com/Trump0412/HyperGaussian"
+url: "https://arxiv.org/abs/XXXX.XXXXX"
 license: "MIT"
 abstract: >-
   HyperGaussian is a unified framework for dynamic 4D Gaussian reconstruction
@@ -15,3 +18,13 @@ keywords:
   - Dynamic Scene Reconstruction
   - Referring Understanding
   - Multimodal Reasoning
+preferred-citation:
+  type: article
+  title: "HyperGaussian: Referring 4D Gaussian Splatting"
+  authors:
+    - family-names: "Author1FamilyName"
+      given-names: "Author1GivenName"
+    - family-names: "Author2FamilyName"
+      given-names: "Author2GivenName"
+  journal: "arXiv preprint arXiv:XXXX.XXXXX"
+  year: 2026

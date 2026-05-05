@@ -6,9 +6,11 @@
 [![Python 3.10](https://img.shields.io/badge/Python-3.10-brightgreen.svg)](#environment-setup)
 [![CUDA 12.1](https://img.shields.io/badge/CUDA-12.1-orange.svg)](#environment-setup)
 
-[Project Page](https://trump0412.github.io/HyperGaussian/) | [Citation](#citation) | [Dataset](https://huggingface.co/datasets/Trump0412/HyperGaussian-R4D-Bench-QA)
+[Project Page](https://trump0412.github.io/HyperGaussian/) | [arXiv (Coming Soon)](https://arxiv.org/abs/XXXX.XXXXX) | [Citation](#citation) | [Dataset (HuggingFace)](https://huggingface.co/datasets/LiYacheng/r4d-bench-qa)
 
 </div>
+
+**Authors:** Author 1, Author 2, Author 3, Author 4
 
 ---
 
@@ -28,7 +30,7 @@
 |---|---|---|---|---|---|
 | Segment then Splat | 55.6 | 28.4 | 20.3208 | 0.7027 | **0.3971** |
 | 4D LangSplat | 58.4 | 32.1 | 20.3208 | 0.7027 | **0.3971** |
-| HyperGaussian (Ours) | **76.5** | **34.4** | **20.4159** | **0.7069** | 0.4082 |
+| HyperGaussian (Ours) | **76.5** | **34.4** | **20.4159** | **0.7069** | **0.3942** |
 
 ### Generalization — 4D LangSplat HyperNeRF split
 
@@ -165,7 +167,7 @@ bash scripts/download_r4d_bench_qa.sh
 
 Downloads to `data/benchmarks/r4d_bench_qa/`.
 
-Note: the Hugging Face dataset repository may be gated/private depending on release stage.
+Dataset link: [https://huggingface.co/datasets/LiYacheng/r4d-bench-qa](https://huggingface.co/datasets/LiYacheng/r4d-bench-qa)
 
 ## Training
 
@@ -242,12 +244,17 @@ HyperGaussian/
 
 ## Citation
 
+Replace the placeholders below before final release:
+- `XXXX.XXXXX` -> your final arXiv id
+- `Author 1 and Author 2 and ...` -> full author list
+
 ```bibtex
-@inproceedings{hypergaussian2026,
+@article{hypergaussian2026,
   title     = {HyperGaussian: Referring 4D Gaussian Splatting},
-  author    = {HyperGaussian Authors},
-  booktitle = {Proceedings of the 34th ACM International Conference on Multimedia},
-  year      = {2026}
+  author    = {Author 1 and Author 2 and ...},
+  journal   = {arXiv preprint arXiv:XXXX.XXXXX},
+  year      = {2026},
+  url       = {https://arxiv.org/abs/XXXX.XXXXX}
 }
 ```
 
