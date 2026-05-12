@@ -12,7 +12,7 @@ from PIL import Image
 from .source_images import resolve_dataset_image_entries
 
 _PROJECT_ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_QWEN_MODEL = Path(os.environ.get("HYPERGAUSSIAN_QWEN_MODEL", str(_PROJECT_ROOT / "models" / "Qwen3-VL-8B-Instruct")))
+DEFAULT_QWEN_MODEL = Path((os.environ.get("REFERGAUSSIAN_QWEN_MODEL") or os.environ.get("HYPERGAUSSIAN_QWEN_MODEL") or str(_PROJECT_ROOT / "models" / "Qwen3-VL-8B-Instruct")))
 
 
 QUERY_PLAN_TEMPLATE = """You are planning query-conditioned 4D entity discovery for ReferGaussian.

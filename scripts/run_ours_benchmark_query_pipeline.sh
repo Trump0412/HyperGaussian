@@ -84,6 +84,8 @@ FULL_QUERIES_JSON="${REPORT_DIR}/benchmark_full_queries.json"
 # 若补全版本不存在，先生成
 if [[ ! -f "${FULL_QUERIES_JSON}" ]]; then
   log_msg "生成完整查询列表（补全空文本）..."
+  OURS_BENCHMARK_JSON="${BENCHMARK_JSON}" \
+  OURS_BENCHMARK_REPORT_DIR="${REPORT_DIR}" \
   gs_python "${GS_ROOT}/scripts/prepare_ours_benchmark_queries.py"
 fi
 
@@ -100,37 +102,57 @@ PYEOF
 log_msg "=== 开始批量query pipeline ==="
 log_msg "共 $(wc -l < "${REPORT_DIR}/benchmark_queries.tsv") 条查询"
 
+RUNS_ROOT="${OURS_BENCHMARK_RUNS_ROOT:-${GS_ROOT}/runs}"
+DATA_ROOT="${OURS_BENCHMARK_DATA_ROOT:-${GS_ROOT}/data}"
+
+# Auto-fallback for split workspaces (code in HyperGaussian, assets in GaussianStellar)
+if [[ ! -d "${RUNS_ROOT}" && -d "${GS_REPO_PARENT}/GaussianStellar/runs" ]]; then
+  RUNS_ROOT="${GS_REPO_PARENT}/GaussianStellar/runs"
+fi
+if [[ -d "${RUNS_ROOT}" && ! -d "${RUNS_ROOT}/stellar_tube_ours_benchmark" && -d "${GS_REPO_PARENT}/GaussianStellar/runs/stellar_tube_ours_benchmark" ]]; then
+  RUNS_ROOT="${GS_REPO_PARENT}/GaussianStellar/runs"
+fi
+if [[ ! -d "${DATA_ROOT}" && -d "${GS_REPO_PARENT}/GaussianStellar/data" ]]; then
+  DATA_ROOT="${GS_REPO_PARENT}/GaussianStellar/data"
+fi
+if [[ -d "${DATA_ROOT}" && ! -d "${DATA_ROOT}/dynerf" && -d "${GS_REPO_PARENT}/GaussianStellar/data/dynerf" ]]; then
+  DATA_ROOT="${GS_REPO_PARENT}/GaussianStellar/data"
+fi
+
+log_msg "RUNS_ROOT=${RUNS_ROOT}"
+log_msg "DATA_ROOT=${DATA_ROOT}"
+
 # ===========================================================
 # Scene → run_dir + dataset_dir 映射
 # ===========================================================
 declare -A SCENE_RUN_DIR=(
-  ["espresso"]="${GS_ROOT}/runs/stellar_tube_4dlangsplat_refresh_20260328_espresso/hypernerf/espresso"
-  ["americano"]="${GS_ROOT}/runs/stellar_tube_4dlangsplat_refresh_20260328_americano/hypernerf/americano"
-  ["cut_lemon"]="${GS_ROOT}/runs/stellar_tube_cutlemon_refresh_20260329/hypernerf/cut-lemon1"
-  ["split_cookie"]="${GS_ROOT}/runs/stellar_tube_full6_20260328_histplus_span040_sigma032/hypernerf/split-cookie"
-  ["keyboard"]="${GS_ROOT}/runs/stellar_tube_ours_benchmark_keyboard/hypernerf/keyboard"
-  ["torchchocolate"]="${GS_ROOT}/runs/stellar_tube_ours_benchmark_torchocolate/hypernerf/torchocolate"
-  ["coffee_martini"]="${GS_ROOT}/runs/stellar_tube_ours_benchmark_coffee_martini/dynerf/coffee_martini"
-  ["flame_steak"]="${GS_ROOT}/runs/stellar_tube_ours_benchmark_flame_steak/dynerf/flame_steak"
-  ["cook-spinach"]="${GS_ROOT}/runs/stellar_tube_ours_benchmark_cook_spinach/dynerf/cook_spinach"
-  ["cut_roasted_beef"]="${GS_ROOT}/runs/stellar_tube_ours_benchmark_cut_roasted_beef/dynerf/cut_roasted_beef"
-  ["flame_salmon"]="${GS_ROOT}/runs/stellar_tube_ours_benchmark_flame_salmon/dynerf/flame_salmon_1"
-  ["sear_steak"]="${GS_ROOT}/runs/stellar_tube_ours_benchmark_sear_steak/dynerf/sear_steak"
+  ["espresso"]="${RUNS_ROOT}/stellar_tube_4dlangsplat_refresh_20260328_espresso/hypernerf/espresso"
+  ["americano"]="${RUNS_ROOT}/stellar_tube_4dlangsplat_refresh_20260328_americano/hypernerf/americano"
+  ["cut_lemon"]="${RUNS_ROOT}/stellar_tube_cutlemon_refresh_20260329/hypernerf/cut-lemon1"
+  ["split_cookie"]="${RUNS_ROOT}/stellar_tube_ours_benchmark_split_cookie/hypernerf/split-cookie"
+  ["keyboard"]="${RUNS_ROOT}/stellar_tube_ours_benchmark_keyboard/hypernerf/keyboard"
+  ["torchchocolate"]="${RUNS_ROOT}/stellar_tube_ours_benchmark_torchocolate/hypernerf/torchocolate"
+  ["coffee_martini"]="${RUNS_ROOT}/stellar_tube_ours_benchmark_coffee_martini/dynerf/coffee_martini"
+  ["flame_steak"]="${RUNS_ROOT}/stellar_tube_ours_benchmark_flame_steak/dynerf/flame_steak"
+  ["cook-spinach"]="${RUNS_ROOT}/stellar_tube_ours_benchmark/dynerf/cook_spinach"
+  ["cut_roasted_beef"]="${RUNS_ROOT}/stellar_tube_ours_benchmark/dynerf/cut_roasted_beef"
+  ["flame_salmon"]="${RUNS_ROOT}/stellar_tube_ours_benchmark/dynerf/flame_salmon_1"
+  ["sear_steak"]="${RUNS_ROOT}/stellar_tube_ours_benchmark/dynerf/sear_steak"
 )
 
 declare -A SCENE_DATASET_DIR=(
-  ["espresso"]="${GS_ROOT}/data/hypernerf/misc/espresso"
-  ["americano"]="${GS_ROOT}/data/hypernerf/misc/americano"
-  ["cut_lemon"]="${GS_ROOT}/data/hypernerf/interp/cut-lemon1"
-  ["split_cookie"]="${GS_ROOT}/data/hypernerf/misc/split-cookie"
-  ["keyboard"]="${GS_ROOT}/data/hypernerf/misc/keyboard"
-  ["torchchocolate"]="${GS_ROOT}/data/hypernerf/interp/torchocolate"
-  ["coffee_martini"]="${GS_ROOT}/data/dynerf/coffee_martini"
-  ["flame_steak"]="${GS_ROOT}/data/dynerf/flame_steak"
-  ["cook-spinach"]="${GS_ROOT}/data/dynerf/cook_spinach"
-  ["cut_roasted_beef"]="${GS_ROOT}/data/dynerf/cut_roasted_beef"
-  ["flame_salmon"]="${GS_ROOT}/data/dynerf/flame_salmon_1"
-  ["sear_steak"]="${GS_ROOT}/data/dynerf/sear_steak"
+  ["espresso"]="${DATA_ROOT}/hypernerf/misc/espresso"
+  ["americano"]="${DATA_ROOT}/hypernerf/misc/americano"
+  ["cut_lemon"]="${DATA_ROOT}/hypernerf/interp/cut-lemon1"
+  ["split_cookie"]="${DATA_ROOT}/hypernerf/misc/split-cookie"
+  ["keyboard"]="${DATA_ROOT}/hypernerf/misc/keyboard"
+  ["torchchocolate"]="${DATA_ROOT}/hypernerf/interp/torchocolate"
+  ["coffee_martini"]="${DATA_ROOT}/dynerf/coffee_martini"
+  ["flame_steak"]="${DATA_ROOT}/dynerf/flame_steak"
+  ["cook-spinach"]="${DATA_ROOT}/dynerf/cook_spinach"
+  ["cut_roasted_beef"]="${DATA_ROOT}/dynerf/cut_roasted_beef"
+  ["flame_salmon"]="${DATA_ROOT}/dynerf/flame_salmon_1"
+  ["sear_steak"]="${DATA_ROOT}/dynerf/sear_steak"
 )
 
 # 从query_id推断scene_key
@@ -154,7 +176,7 @@ get_scene_key() {
 }
 
 # 场景限制（可通过环境变量控制）
-ONLY_SCENES="${OURS_BENCHMARK_SCENES:-espresso americano cut_lemon split_cookie}"
+ONLY_SCENES="${OURS_BENCHMARK_SCENES:-espresso americano cut_lemon split_cookie keyboard torchchocolate coffee_martini flame_steak cook-spinach cut_roasted_beef flame_salmon sear_steak}"
 
 # ===========================================================
 # 主循环

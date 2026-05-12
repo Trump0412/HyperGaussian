@@ -18,12 +18,7 @@ BENCHMARK_JSON = Path(
         str(REPO_ROOT / "data" / "benchmarks" / "r4d_bench_qa" / "benchmark.json"),
     )
 )
-GR4D_BENCH_ROOT = Path(
-    os.environ.get(
-        "GR4D_BENCH_ROOT",
-        str(REPO_ROOT / "data" / "GR4D-Bench" / "data" / "scenes"),
-    )
-)
+
 REPORT_DIR = Path(
     os.environ.get(
         "OURS_BENCHMARK_REPORT_DIR",
@@ -36,34 +31,81 @@ OUTPUT_JSON = REPORT_DIR / "benchmark_full_queries.json"
 OUTPUT_TSV = REPORT_DIR / "benchmark_queries.tsv"
 
 
+def discover_gr4d_roots() -> list[Path]:
+    env_root = os.environ.get("GR4D_BENCH_ROOT", "").strip()
+    if env_root:
+        return [Path(env_root)]
+
+    candidates = [
+        REPO_ROOT / "data" / "GR4D-Bench" / "data" / "scenes",
+        REPO_ROOT / "data" / "benchmarks" / "gr4d_curated_v1" / "scenes",
+        REPO_ROOT.parent / "GaussianStellar" / "data" / "benchmarks" / "gr4d_curated_v1" / "scenes",
+    ]
+    return [p for p in candidates if p.exists()]
+
+
+def _extract_query_list(payload: object) -> list[dict]:
+    if isinstance(payload, list):
+        return [x for x in payload if isinstance(x, dict)]
+
+    if isinstance(payload, dict):
+        for key in ("queries", "items", "data"):
+            value = payload.get(key)
+            if isinstance(value, list):
+                return [x for x in value if isinstance(x, dict)]
+        if "query_id" in payload:
+            return [payload]
+
+    return []
+
+
+def _extract_query_text(query: dict) -> str:
+    for key in ("text_zh", "text_en", "question", "query"):
+        value = str(query.get(key, "")).strip()
+        if value:
+            return value
+    return ""
+
+
 def load_gr4d_queries() -> dict[str, str]:
     """Load GR4D-Bench queries and return query_id -> text mapping."""
     result: dict[str, str] = {}
-    if not GR4D_BENCH_ROOT.exists():
+    roots = discover_gr4d_roots()
+    if not roots:
         return result
 
-    for scene_dir in GR4D_BENCH_ROOT.iterdir():
-        if not scene_dir.is_dir():
+    for root in roots:
+        if not root.exists():
             continue
-        for fname in (
-            f"{scene_dir.name}_queries.json",
-            f"{scene_dir.name.replace('_', '-')}_queries.json",
-            "queries.json",
-        ):
-            qpath = scene_dir / fname
-            if not qpath.exists():
+        print(f"[info] 使用 GR4D 根目录: {root}")
+
+        for scene_dir in root.iterdir():
+            if not scene_dir.is_dir():
                 continue
-            try:
-                queries = json.loads(qpath.read_text(encoding="utf-8"))
-                for q in queries:
-                    qid = str(q.get("query_id", "")).strip()
-                    text_zh = str(q.get("text_zh", "")).strip()
-                    text_en = str(q.get("text_en", "")).strip()
-                    if qid:
-                        result[qid] = text_zh if text_zh else text_en
-            except Exception as exc:  # noqa: BLE001
-                print(f"[warn] 读取 {qpath} 失败: {exc}")
-            break
+
+            scene_name = scene_dir.name
+            candidates = (
+                f"{scene_name}_queries.json",
+                f"{scene_name.replace('_', '-')}_queries.json",
+                "queries.json",
+                "curated_queries.json",
+            )
+            for fname in candidates:
+                qpath = scene_dir / fname
+                if not qpath.exists():
+                    continue
+                try:
+                    payload = json.loads(qpath.read_text(encoding="utf-8"))
+                    queries = _extract_query_list(payload)
+                    for q in queries:
+                        qid = str(q.get("query_id", "")).strip()
+                        text = _extract_query_text(q)
+                        if qid and text and qid not in result:
+                            result[qid] = text
+                except Exception as exc:  # noqa: BLE001
+                    print(f"[warn] 读取 {qpath} 失败: {exc}")
+                break
+
     return result
 
 

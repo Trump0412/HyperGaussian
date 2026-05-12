@@ -118,7 +118,9 @@ snapshot_download('Qwen/Qwen3-VL-8B-Instruct', local_dir='models/Qwen3-VL-8B-Ins
 Default path is `models/Qwen3-VL-8B-Instruct/` (relative to repo root). Override with:
 
 ```bash
-export HYPERGAUSSIAN_QWEN_MODEL=/path/to/Qwen3-VL-8B-Instruct
+export REFERGAUSSIAN_QWEN_MODEL=/path/to/Qwen3-VL-8B-Instruct
+# Backward compatibility (legacy name also supported):
+# export HYPERGAUSSIAN_QWEN_MODEL=/path/to/Qwen3-VL-8B-Instruct
 ```
 
 ### SAM2 and Grounding DINO (Grounded-SAM2 pipeline)
