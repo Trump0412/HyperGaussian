@@ -138,10 +138,36 @@ def _merge_ranges(frame_indices: list[int]) -> list[list[int]]:
 
 def _find_render_dir(run_dir: Path) -> Path:
     test_dir = run_dir / "test"
+    if test_dir.is_symlink() and not test_dir.exists():
+        test_dir.unlink()
     candidates = sorted(test_dir.glob("ours_*/renders"))
-    if not candidates:
-        raise FileNotFoundError(f"No render directory found under {test_dir}")
-    return candidates[-1]
+    if candidates:
+        return candidates[-1]
+
+    # DyNeRF fallback: some released runs do not pre-export test renders.
+    # Reuse source RGB frames as a render surrogate so semantic export can proceed.
+    config_path = run_dir / "config.yaml"
+    source_path = None
+    if config_path.exists():
+        for raw_line in config_path.read_text(encoding="utf-8").splitlines():
+            line = raw_line.strip()
+            if line.startswith("source_path:"):
+                source_path = Path(line.split(":", 1)[1].strip())
+                break
+
+    if source_path and source_path.exists():
+        cam_dirs = sorted(source_path.glob("cam*/images"))
+        if cam_dirs:
+            fallback_dir = test_dir / "ours_fallback_source" / "renders"
+            if not fallback_dir.exists():
+                fallback_dir.parent.mkdir(parents=True, exist_ok=True)
+                try:
+                    fallback_dir.symlink_to(cam_dirs[0], target_is_directory=True)
+                except Exception:
+                    shutil.copytree(cam_dirs[0], fallback_dir)
+            return fallback_dir
+
+    raise FileNotFoundError(f"No render directory found under {test_dir}")
 
 
 def _find_source_frame_dir(dataset_dir: Path, target_size: tuple[int, int]) -> Path:
