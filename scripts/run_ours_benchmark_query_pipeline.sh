@@ -10,7 +10,7 @@ REPORT_DIR="${GS_ROOT}/reports/ours_benchmark_eval"
 mkdir -p "${REPORT_DIR}"
 LOG="${REPORT_DIR}/query_pipeline.log"
 
-BENCHMARK_JSON="${1:-${OURS_BENCHMARK_JSON:-${GS_ROOT}/data/benchmarks/r4d_bench_qa/benchmark.json}}"
+INPUT_BENCHMARK_JSON="${1:-${OURS_BENCHMARK_JSON:-${GS_ROOT}/data/benchmarks/r4d_bench_qa/benchmark.json}}"
 QUERY_ROOT_MAP="${REPORT_DIR}/query_root_map.json"
 DATASET_DIR_MAP="${REPORT_DIR}/dataset_dir_map.json"
 
@@ -18,6 +18,45 @@ log_msg() { echo "[$(date '+%H:%M:%S')] $*" | tee -a "${LOG}"; }
 
 unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY all_proxy ALL_PROXY ftp_proxy FTP_PROXY
 export HF_ENDPOINT="${HF_ENDPOINT:-https://hf-mirror.com}"
+
+resolve_benchmark_json() {
+  local requested="$1"
+  local candidate
+  local requested_dir
+  requested_dir="$(dirname "${requested}")"
+  local candidates=(
+    "${requested}"
+    "${requested_dir}/scripts/new_predictions_ground_truth_final.json"
+    "${requested_dir}/scripts/new_predictions_ground_truth_all_queries.json"
+    "${GS_ROOT}/data/benchmarks/r4d_bench_qa/benchmark.json"
+    "${GS_ROOT}/data/benchmarks/r4d_bench_qa/benchmark_all_queries.json"
+    "${GS_ROOT}/data/benchmarks/r4d_bench_qa/scripts/new_predictions_ground_truth_final.json"
+    "${GS_ROOT}/data/benchmarks/r4d_bench_qa/scripts/new_predictions_ground_truth_all_queries.json"
+  )
+
+  if [[ -d "${requested}" ]]; then
+    candidates+=(
+      "${requested}/benchmark.json"
+      "${requested}/benchmark_all_queries.json"
+      "${requested}/scripts/new_predictions_ground_truth_final.json"
+      "${requested}/scripts/new_predictions_ground_truth_all_queries.json"
+    )
+  fi
+
+  for candidate in "${candidates[@]}"; do
+    [[ -f "${candidate}" ]] && {
+      echo "${candidate}"
+      return 0
+    }
+  done
+  return 1
+}
+
+if ! BENCHMARK_JSON="$(resolve_benchmark_json "${INPUT_BENCHMARK_JSON}")"; then
+  echo "[error] benchmark json not found. requested=${INPUT_BENCHMARK_JSON}" >&2
+  exit 2
+fi
+log_msg "BENCHMARK_JSON=${BENCHMARK_JSON}"
 
 # 初始化映射文件
 if [[ ! -f "${QUERY_ROOT_MAP}" ]]; then
@@ -81,8 +120,8 @@ open(path, 'w').write(json.dumps(d, indent=2, ensure_ascii=False))
 # ===========================================================
 FULL_QUERIES_JSON="${REPORT_DIR}/benchmark_full_queries.json"
 
-# 若补全版本不存在，先生成
-if [[ ! -f "${FULL_QUERIES_JSON}" ]]; then
+# 若补全版本不存在、或基准更新，先生成
+if [[ "${FORCE_PREPARE_BENCHMARK_QUERIES:-0}" == "1" || ! -f "${FULL_QUERIES_JSON}" || "${BENCHMARK_JSON}" -nt "${FULL_QUERIES_JSON}" ]]; then
   log_msg "生成完整查询列表（补全空文本）..."
   OURS_BENCHMARK_JSON="${BENCHMARK_JSON}" \
   OURS_BENCHMARK_REPORT_DIR="${REPORT_DIR}" \
@@ -163,7 +202,7 @@ get_scene_key() {
     espresso_*) echo "espresso" ;;
     keyboard_*) echo "keyboard" ;;
     torchchocolate_*) echo "torchchocolate" ;;
-    "cook-spinach_"*) echo "cook-spinach" ;;
+    cook-spinach_*|cook_spinach_*) echo "cook-spinach" ;;
     cut_roasted_beef_*) echo "cut_roasted_beef" ;;
     flame_salmon_*) echo "flame_salmon" ;;
     sear_steak_*) echo "sear_steak" ;;

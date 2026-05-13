@@ -4,10 +4,10 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 EXTERNAL_DIR="${ROOT_DIR}/external"
 
-FOURD_REPO_URL="${HYPERGAUSSIAN_4DGS_REPO:-https://github.com/hustvl/4DGaussians.git}"
-FOURD_REPO_REF="${HYPERGAUSSIAN_4DGS_REF:-843d5ac636c37e4b611242287754f3d4ed150144}"
-GSAM2_REPO_URL="${HYPERGAUSSIAN_GSAM2_REPO:-https://github.com/IDEA-Research/Grounded-SAM-2.git}"
-GSAM2_REPO_REF="${HYPERGAUSSIAN_GSAM2_REF:-b7a9c29f196edff0eb54dbe14588d7ae5e3dde28}"
+FOURD_REPO_URL="${REFERGAUSSIAN_4DGS_REPO:-https://github.com/hustvl/4DGaussians.git}"
+FOURD_REPO_REF="${REFERGAUSSIAN_4DGS_REF:-843d5ac636c37e4b611242287754f3d4ed150144}"
+GSAM2_REPO_URL="${REFERGAUSSIAN_GSAM2_REPO:-https://github.com/IDEA-Research/Grounded-SAM-2.git}"
+GSAM2_REPO_REF="${REFERGAUSSIAN_GSAM2_REF:-b7a9c29f196edff0eb54dbe14588d7ae5e3dde28}"
 
 mkdir -p "${EXTERNAL_DIR}"
 

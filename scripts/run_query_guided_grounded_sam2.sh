@@ -28,7 +28,15 @@ else
     --num-boundary-frames "${GSAM2_NUM_BOUNDARY_FRAMES:-15}"
   )
   if [[ "${GSAM2_QUERY_PLAN_STRICT:-1}" == "1" ]]; then
-    gsam2_python "${GS_ROOT}/scripts/plan_query_entities.py" "${plan_args[@]}" --strict
+    if ! gsam2_python "${GS_ROOT}/scripts/plan_query_entities.py" "${plan_args[@]}" --strict; then
+      if [[ "${GSAM2_QUERY_PLAN_STRICT_FALLBACK:-1}" == "1" ]]; then
+        echo "[warn] strict query planner failed; retrying with non-strict mode"
+        gsam2_python "${GS_ROOT}/scripts/plan_query_entities.py" "${plan_args[@]}"
+      else
+        echo "[error] strict query planner failed and strict fallback is disabled" >&2
+        exit 1
+      fi
+    fi
   else
     gsam2_python "${GS_ROOT}/scripts/plan_query_entities.py" "${plan_args[@]}"
   fi

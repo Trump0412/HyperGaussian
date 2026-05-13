@@ -24,6 +24,7 @@ from __future__ import annotations
 import argparse
 import bisect
 import json
+import os
 import struct
 import zlib
 from pathlib import Path
@@ -130,6 +131,24 @@ def _decode_segmentation(seg: dict | list, image_size: tuple[int, int] | None = 
         if image_size is not None:
             h, w = image_size
         if h is None or w is None:
+            # Fallback: infer canvas size from polygon extents when size metadata
+            # is unavailable (some benchmark annotations only provide polygons).
+            max_x = 0.0
+            max_y = 0.0
+            has_point = False
+            for polygon in seg:
+                if not isinstance(polygon, list) or len(polygon) < 2:
+                    continue
+                xs = polygon[0::2]
+                ys = polygon[1::2]
+                if xs and ys:
+                    has_point = True
+                    max_x = max(max_x, max(float(v) for v in xs))
+                    max_y = max(max_y, max(float(v) for v in ys))
+            if has_point:
+                w = int(np.ceil(max_x)) + 1
+                h = int(np.ceil(max_y)) + 1
+        if h is None or w is None:
             return None
         from PIL import Image as PILImage, ImageDraw
         mask_img = PILImage.new("L", (w, h), 0)
@@ -225,6 +244,50 @@ def _infer_dataset_info_from_query_output(query_output_dir: Path) -> tuple[str |
     return ds_type, None
 
 
+def _resolve_binary_mask_dir(raw_path: str | None, query_output_dir: Path) -> Path | None:
+    """Resolve binary mask directory from absolute/relative validation payload paths."""
+    raw_text = str(raw_path or "").strip()
+    if not raw_text:
+        return None
+
+    raw = Path(raw_text)
+    candidates: list[Path] = []
+    if raw.is_absolute():
+        candidates.append(raw)
+    else:
+        candidates.extend(
+            [
+                raw,
+                query_output_dir / raw,
+                query_output_dir / "final_query_render_sourcebg" / raw,
+                query_output_dir.parent / raw,
+                Path.cwd() / raw,
+            ]
+        )
+        marker = f"{os.sep}runs{os.sep}"
+        if raw_text.startswith(f"runs{os.sep}"):
+            qtext = str(query_output_dir)
+            if marker in qtext:
+                prefix = qtext.split(marker, 1)[0]
+                candidates.append(Path(prefix) / raw)
+
+    # Canonical fallback used by query_render.py
+    candidates.append(query_output_dir / "final_query_render_sourcebg" / "binary_masks")
+
+    seen: set[str] = set()
+    deduped: list[Path] = []
+    for candidate in candidates:
+        key = str(candidate)
+        if key in seen:
+            continue
+        seen.add(key)
+        deduped.append(candidate)
+    for candidate in deduped:
+        if candidate.exists():
+            return candidate
+    return deduped[0] if deduped else None
+
+
 # ---------------------------------------------------------------------------
 # Per-query evaluation
 # ---------------------------------------------------------------------------
@@ -255,7 +318,10 @@ def evaluate_query(
 
     validation = _read_json(validation_path)
     val_frames = validation.get("frames", [])
-    binary_mask_dir = Path(validation.get("frame_exports", {}).get("binary_masks", ""))
+    binary_mask_dir = _resolve_binary_mask_dir(
+        validation.get("frame_exports", {}).get("binary_masks"),
+        query_output_dir,
+    )
 
     if not val_frames:
         return {
@@ -402,7 +468,7 @@ def evaluate_query(
     # Determine image size for polygon mask decoding.
     # Use the first available rendered binary mask to get (H, W).
     pred_image_size: tuple[int, int] | None = None
-    if binary_mask_dir and binary_mask_dir.exists():
+    if binary_mask_dir is not None and binary_mask_dir.exists():
         sample_masks = sorted(binary_mask_dir.glob("*.png"))
         if sample_masks:
             with Image.open(sample_masks[0]) as _img:
@@ -475,7 +541,7 @@ def evaluate_query(
         frame_idx = int(val_frame["frame_index"])
         mask_found += 1
 
-        if not binary_mask_dir or not binary_mask_dir.exists():
+        if binary_mask_dir is None or not binary_mask_dir.exists():
             # No mask output dir
             iou_sum += 0.0
             iou_count += 1
@@ -500,7 +566,12 @@ def evaluate_query(
         iou_sum += iou
         iou_count += 1
 
-    v_iou = _safe_div(iou_sum, iou_count)
+    # Empty-set rule: if GT and prediction are both empty over timeline,
+    # count vIoU as 1.0 (100%) when the empty answer is correct.
+    if iou_count == 0 and temporal_union == 0:
+        v_iou = 1.0
+    else:
+        v_iou = _safe_div(iou_sum, iou_count)
 
     return {
         "query_id": query_id,
@@ -519,6 +590,7 @@ def evaluate_query(
         "mask_missing": mask_missing,
         "vIoU_count": iou_count,
         "validation_path": str(validation_path),
+        "binary_mask_dir_used": str(binary_mask_dir) if binary_mask_dir is not None else None,
         "dataset_dir_used": str(dataset_dir) if dataset_dir is not None else None,
     }
 

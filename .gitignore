@@ -3,6 +3,7 @@ runs/
 data/
 logs/
 reports/
+server_sync/
 __pycache__/
 *.pyc
 *.pth

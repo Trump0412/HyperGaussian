@@ -444,13 +444,35 @@ def run_grounded_sam2_query(
     detector_phrases = [str(item).strip() for item in query_plan.get("detector_phrases", []) if str(item).strip()]
     must_track_phrases = [str(item).strip() for item in query_plan.get("must_track_phrases", []) if str(item).strip()]
     successor_phrases = [str(item).strip() for item in query_plan.get("query_successor_phrases", []) if str(item).strip()]
-    if not detector_phrases:
-        raise ValueError(f"No detector_phrases found in {query_plan_path}")
 
     image_entries = resolve_dataset_image_entries(dataset_dir)
     image_entries = image_entries[:: max(int(frame_subsample_stride), 1)]
     if not image_entries:
         raise ValueError(f"No image entries available after frame subsampling under {dataset_dir}")
+
+    if not detector_phrases:
+        # Negative/empty queries may intentionally produce no detector phrases.
+        # Emit a valid empty tracks payload so downstream stages can continue and
+        # render an all-empty prediction instead of hard-failing.
+        payload = {
+            "schema_version": 1,
+            "dataset_dir": str(dataset_dir),
+            "query_plan_path": str(query_plan_path),
+            "grounding_model_id": grounding_model_id,
+            "sam2_model_id": sam2_model_id,
+            "prompt_type": prompt_type,
+            "frame_subsample_stride": int(frame_subsample_stride),
+            "num_tracking_frames": int(len(image_entries)),
+            "detector_frame_stride": int(detector_frame_stride),
+            "max_detector_frames": int(max_detector_frames),
+            "track_window_radius": int(track_window_radius),
+            "num_anchor_seeds": int(num_anchor_seeds),
+            "phrases": [],
+            "tracks": [],
+        }
+        _write_json(output_dir / "grounded_sam2_query_tracks.json", payload)
+        return output_dir
+
     sampled_entries = _sample_search_entries(
         image_entries,
         frame_stride=detector_frame_stride,

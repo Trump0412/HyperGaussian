@@ -1179,10 +1179,19 @@ def _compose_phrase_grounded_selection(
             "contact_pair": None,
             "raw_output": raw_output,
         }
-    _allow_missing = (query_state_mode == "static")
+    query_norm = _normalize_phrase(query)
+    is_exclusion_query = _is_exclusion_query(query_norm)
+    force_allow_missing = os.environ.get("QUERY_ALLOW_MISSING_PHRASE", "0") == "1"
+    _allow_missing = (query_state_mode == "static") or is_exclusion_query or force_allow_missing
     subject_ids, subject_matches = _select_phrase_ids(candidates, subject_phrases, allow_missing=_allow_missing)
     successor_ids, successor_matches = _select_phrase_ids(candidates, successor_phrases, allow_missing=_allow_missing) if successor_phrases else ([], {})
-    query_norm = _normalize_phrase(query)
+    if is_exclusion_query and not subject_ids and candidates:
+        subject_ids = [int(candidate["id"]) for candidate in candidates]
+        subject_phrases = [
+            str(candidate.get("proposal_phrase") or candidate.get("static_text") or ("entity_%s" % candidate["id"]))
+            for candidate in candidates
+        ]
+        subject_matches = {"__all__": [int(candidate["id"]) for candidate in candidates]}
     split_keywords = ("broken", "pieces", "halves", "split", "cracked")
     intact_keywords = ("complete", "whole", "intact", "unbroken")
     if len(subject_ids) == 1:
@@ -1612,7 +1621,7 @@ def _compose_phrase_grounded_selection(
 
     # --- Exclusion query: "all objects EXCEPT X" — no interaction required ---
     # For exclusion queries, each selected entity is active in its own support window.
-    if _is_exclusion_query(_normalize_phrase(query)) and subject_ids:
+    if is_exclusion_query and subject_ids:
         selected_rows_excl = []
         full_range = [[0, int(len(test_times) - 1)]]
         for entity_id, phrase in zip(subject_ids, subject_phrases):

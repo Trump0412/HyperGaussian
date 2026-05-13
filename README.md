@@ -218,15 +218,35 @@ python scripts/evaluate_public_query_protocol.py \
 ### Referring evaluation — R4D-Bench-QA
 
 ```bash
-bash scripts/run_ours_benchmark_query_pipeline.sh \
-  data/benchmarks/r4d_bench_qa/benchmark.json
+# 1) Run query pipeline on selected benchmark tier (36 or 89 dense-GT queries)
+#    Supported inputs:
+#    - data/benchmarks/r4d_bench_qa/benchmark.json
+#    - data/benchmarks/r4d_bench_qa/benchmark_all_queries.json
+#    - downloaded HF folder root (auto-resolve under scripts/)
+bash scripts/run_ours_benchmark_query_pipeline.sh data/benchmarks/r4d_bench_qa/benchmark.json
 
+# 2) Re-evaluate from saved query outputs (no rerun of model inference)
 python scripts/evaluate_ours_benchmark.py \
-  --benchmark data/benchmarks/r4d_bench_qa/benchmark.json \
+  --benchmark data/benchmarks/r4d_bench_qa/benchmark_all_queries.json \
   --query-root-map reports/ours_benchmark_eval/query_root_map.json \
   --dataset-dir-map reports/ours_benchmark_eval/dataset_dir_map.json \
-  --output-json reports/r4d_bench_eval.json
+  --output-json reports/r4d_bench_eval.json \
+  --output-md reports/r4d_bench_eval.md \
+  --skip-missing
 ```
+
+Output files:
+- `reports/ours_benchmark_eval/query_root_map.json`
+- `reports/ours_benchmark_eval/dataset_dir_map.json`
+- `reports/r4d_bench_eval.json` (per-query Acc/vIoU/tIoU + summary)
+- `reports/r4d_bench_eval.md`
+
+Metric rule used in this repository:
+- Empty-set rule is enabled in evaluator: if GT and prediction are both empty (temporal union = 0), `vIoU = 1.0` and `tIoU = 1.0`.
+
+Important benchmark note:
+- Current HF `LiYacheng/r4d-bench-qa` artifacts provide dense GT for 36-query and 89-query tiers.
+- The larger language-only extension set does not always include dense masks, so strict `vIoU`/`tIoU` cannot be computed for those entries without extra GT alignment files.
 
 ## Repository Layout
 

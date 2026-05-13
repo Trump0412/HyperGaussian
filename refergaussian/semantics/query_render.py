@@ -286,7 +286,7 @@ def _resolve_query_tracks(selection_path: Path) -> dict[str, QueryTrack]:
 def _query_track_mask_for_time(track: QueryTrack | None, time_value: float, tolerance: float = 0.012) -> np.ndarray | None:
     if track is None or not track.frames:
         return None
-    fallback_scale = max(1.0, float(os.environ.get("GS_QUERY_TRACK_FALLBACK_SCALE", "1.0")))
+    fallback_scale = max(1.0, float(os.environ.get("GS_QUERY_TRACK_FALLBACK_SCALE", "1.25")))
     frame_times = np.asarray([float(frame.get("time_value", 0.0)) for frame in track.frames], dtype=np.float32)
     adaptive_tolerance = float(tolerance)
     if frame_times.size >= 2:
@@ -429,17 +429,21 @@ def _fuse_query_and_cloud_masks(
     query_bbox = _entity_mask_bbox(query_binary)
     if query_bbox is None:
         return cloud_binary, cloud_bbox, None
+    aligned_query = query_binary
+    aligned_query_bbox = query_bbox
+    if cloud_bbox is not None:
+        aligned_query, aligned_query_bbox = _align_query_track_mask(query_binary, cloud_bbox)
     normalized_state = _normalize_track_state_mode(track_state_mode)
     support_like = normalized_state in {None, "support"}
-    if cloud_binary is not None and support_like and int(selected_item_count) <= 1:
-        # For support-style single-object queries, use the 2D track as the main mask and
-        # let the projected worldtube fill only local holes near that evidence.
-        support = cloud_binary & _dilate_binary_mask(query_binary, kernel_size=11)
+    if cloud_binary is not None and int(selected_item_count) <= 1:
+        # Align 2D track to projected cloud and recover nearby support for better mask overlap.
+        kernel_size = 11 if support_like else 15
+        support = cloud_binary & _dilate_binary_mask(aligned_query, kernel_size=kernel_size)
         if bool(support.any()):
-            fused = query_binary | support
+            fused = aligned_query | support
             fused_bbox = _entity_mask_bbox(fused)
-            return fused, fused_bbox, query_bbox
-    return query_binary, query_bbox, query_bbox
+            return fused, fused_bbox, aligned_query_bbox
+    return aligned_query, aligned_query_bbox, aligned_query_bbox
 
 
 def _interp_vector(query_times: np.ndarray, sample_times: np.ndarray, values: np.ndarray) -> np.ndarray:
@@ -751,6 +755,14 @@ def _open_video_writer(path: Path, fps: int):
         return writer, fallback_path
 
 
+class _NoopVideoWriter:
+    def append_data(self, _frame: np.ndarray) -> None:
+        return
+
+    def close(self) -> None:
+        return
+
+
 def render_hypernerf_query_video(
     run_dir: str | Path,
     dataset_dir: str | Path,
@@ -769,6 +781,7 @@ def render_hypernerf_query_video(
     binary_mask_dir = output_dir / "binary_masks"
     overlay_frame_dir.mkdir(parents=True, exist_ok=True)
     binary_mask_dir.mkdir(parents=True, exist_ok=True)
+    skip_video_export = os.environ.get("QUERY_SKIP_VIDEO_EXPORT", "0").strip().lower() in {"1", "true", "yes", "on"}
 
     if background_mode not in {"render", "source"}:
         raise ValueError(f"Unsupported background_mode: {background_mode}")
@@ -823,7 +836,7 @@ def render_hypernerf_query_video(
     selection_payload = _read_json(selection_path)
     selected_items = selection_payload.get("selected", [])
     selection_empty = selection_payload.get("empty", False)
-    if not selected_items and selection_empty:
+    if not selected_items:
         # Negative query: Qwen determined entity doesn't satisfy the query.
         # Produce all-inactive (all-black) binary masks so evaluator can score correctly.
         frame_records = []
@@ -860,8 +873,6 @@ def render_hypernerf_query_video(
         }
         _write_json(output_dir / "validation.json", validation_data)
         return output_dir
-    if not selected_items:
-        raise ValueError(f"No selected entities found in {selection_path}")
     track_state_mode = _selection_track_state_mode(selection_payload)
 
     tracks = _load_tracks(run_dir)
@@ -920,8 +931,14 @@ def render_hypernerf_query_video(
         contact_mask = overlap_mask.copy()
         contact_distance = distance.astype(np.float32)
 
-    overlay_writer, overlay_path = _open_video_writer(output_dir / "overlay.mp4", fps=fps)
-    mask_writer, mask_path = _open_video_writer(output_dir / "mask.mp4", fps=fps)
+    if skip_video_export:
+        overlay_path = output_dir / "overlay.mp4"
+        mask_path = output_dir / "mask.mp4"
+        overlay_writer = _NoopVideoWriter()
+        mask_writer = _NoopVideoWriter()
+    else:
+        overlay_writer, overlay_path = _open_video_writer(output_dir / "overlay.mp4", fps=fps)
+        mask_writer, mask_path = _open_video_writer(output_dir / "mask.mp4", fps=fps)
 
     first_active_frame = None
     first_contact_frame = None
@@ -1214,6 +1231,7 @@ def render_hypernerf_query_video(
             }
             for entry in role_entries
         ],
+        "video_export_disabled": bool(skip_video_export),
         "videos": {
             "overlay": _video_meta(overlay_path, fps),
             "mask": _video_meta(mask_path, fps),
